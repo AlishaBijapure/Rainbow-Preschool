@@ -110,7 +110,7 @@ img {
 }
 
 .rainbow-text {
-    background: linear-gradient(to right, var(--primary), var(--orange), var(--yellow), var(--green), var(--blue), var(--purple));
+    background: linear-gradient(to right, red, var(--primary), var(--orange), var(--yellow), var(--green), var(--blue), var(--purple));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     display: inline-block;
@@ -497,7 +497,7 @@ section {
     color: white;
     margin-bottom: 25px;
     /* Clean sticker-like white border outlining the gradient text seamlessly using drop-shadow */
-    filter: drop-shadow(2px 2px 0px white) drop-shadow(-2px -2px 0px white) drop-shadow(-2px 2px 0px white) drop-shadow(2px -2px 0px white) drop-shadow(0px 8px 15px rgba(0,0,0,0.4));
+    filter: drop-shadow(2px 2px 0px white) drop-shadow(-2px -2px 0px white) drop-shadow(-2px 2px 0px white) drop-shadow(2px -2px 0px white) drop-shadow(0px 8px 15px rgba(0, 0, 0, 0.4));
 }
 
 .hero-wrapper .highlight {
