@@ -485,7 +485,7 @@ section {
 
 .hero-wrapper {
     background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(1px);
+    backdrop-filter: blur(3px);
     -webkit-backdrop-filter: blur(2px);
     border: 1px solid rgba(255, 255, 255, 0);
     border-radius: var(--radius-lg);
@@ -599,6 +599,11 @@ section {
     margin-bottom: 10px;
     display: flex;
     align-items: center;
+}
+
+.about-content p {
+    font-weight: 600;
+    color: var(--text-dark);
 }
 
 /* 3. Academics */
