@@ -495,23 +495,28 @@ section {
 .hero-title {
     margin-bottom: 25px;
     line-height: 1.1;
-    /* Soft, wide premium shadow for excellent readability over bright photos */
-    filter: drop-shadow(0px 8px 12px rgba(0, 0, 0, 0.4)) drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.3));
+    /* Clean, glitch-free black sticker outline using multiple overlapping drop shadows */
+    filter: drop-shadow(3px 3px 0px var(--text-dark)) 
+            drop-shadow(-3px -3px 0px var(--text-dark)) 
+            drop-shadow(-3px 3px 0px var(--text-dark)) 
+            drop-shadow(3px -3px 0px var(--text-dark)) 
+            drop-shadow(0px 10px 20px rgba(0, 0, 0, 0.5));
 }
 
-.rainbow-word {
-    font-size: 6rem;
+.rainbow-word, .preschool-word {
     background: linear-gradient(to right, #FF3366, #FF9933, #FFD500, #33CC99, #3399FF, #9933FF);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     display: inline-block;
-    padding-bottom: 10px; /* Prevents text clipping on the bottom of cursive/rounded fonts */
+    padding-bottom: 10px; /* Prevents text clipping on the bottom */
+}
+
+.rainbow-word {
+    font-size: 6rem;
 }
 
 .preschool-word {
-    font-size: 4rem;
-    color: #FFFFFF;
-    letter-spacing: 2px;
+    font-size: 4.5rem;
 }
 
 .hero-wrapper .highlight {
