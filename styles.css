@@ -324,6 +324,11 @@ img {
     border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
+.usp-card p {
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
 /* Placeholder for images */
 .placeholder-box {
     background: linear-gradient(135deg, var(--bg-soft-blue) 0%, #E2E8F0 100%);
