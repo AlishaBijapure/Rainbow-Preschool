@@ -317,6 +317,13 @@ img {
     box-shadow: var(--shadow-hover);
 }
 
+.usp-card {
+    background: rgba(255, 255, 255, 0.463);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
 /* Placeholder for images */
 .placeholder-box {
     background: linear-gradient(135deg, var(--bg-soft-blue) 0%, #E2E8F0 100%);
@@ -561,7 +568,7 @@ section {
     position: relative;
     z-index: 2;
     /* Soft white overlay to ensure dark text remains perfectly readable */
-    background: linear-gradient(rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.087)), url('assets/images/rainbow1.JPEG');
+    background: linear-gradient(rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.087)), url('assets/images/3d-cartoon-back-school.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -569,9 +576,9 @@ section {
 }
 
 .about-content {
-    background: rgba(255, 255, 255, 0.92);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.463);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
     padding: 40px;
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-card);
