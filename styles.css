@@ -525,11 +525,18 @@ section {
 
 .hero-wrapper p {
     font-size: 1.4rem;
-    color: rgba(255, 255, 255, 0.95);
+    color: #FFFFFF;
+    font-weight: 700;
     margin-bottom: 40px;
     max-width: 600px;
     margin-left: auto;
     margin-right: auto;
+    /* Clean black border effect using outside shadows */
+    text-shadow: 1.5px 1.5px 0 var(--text-dark),
+                 -1.5px -1.5px 0 var(--text-dark),
+                 1.5px -1.5px 0 var(--text-dark),
+                 -1.5px 1.5px 0 var(--text-dark),
+                 0px 6px 10px rgba(0,0,0, 0.6);
 }
 
 .hero-buttons {
