@@ -557,11 +557,15 @@ section {
     width: 100%;
 }
 
-/* 2. About Us */
-.about-section {
+/* 2. USP & About Us - Unscrollable Background */
+.usp-section, .about-section {
     position: relative;
     z-index: 2;
-    background: #FFFFFF;
+    /* Soft white overlay to ensure dark text remains perfectly readable */
+    background: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), url('assets/images/rainbow1.JPEG');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* unscrollable/parallax effect */
 }
 
 .about-block {
