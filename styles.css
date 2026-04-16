@@ -472,9 +472,9 @@ section {
 
 .hero-wrapper {
     background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(1px);
+    -webkit-backdrop-filter: blur(2px);
+    border: 1px solid rgba(255, 255, 255, 0);
     border-radius: var(--radius-lg);
     padding: 60px 40px;
     text-align: center;
@@ -496,9 +496,8 @@ section {
     font-size: 5rem;
     color: white;
     margin-bottom: 25px;
-    /* Playful sticker-like text border */
-    -webkit-text-stroke: 3px var(--text-dark);
-    text-shadow: 4px 4px 0px rgba(0, 0, 0, 0.8);
+    /* Clean sticker-like white border outlining the gradient text seamlessly using drop-shadow */
+    filter: drop-shadow(2px 2px 0px white) drop-shadow(-2px -2px 0px white) drop-shadow(-2px 2px 0px white) drop-shadow(2px -2px 0px white) drop-shadow(0px 8px 15px rgba(0,0,0,0.4));
 }
 
 .hero-wrapper .highlight {
