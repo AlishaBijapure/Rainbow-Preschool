@@ -461,9 +461,8 @@ section {
     min-height: 100vh;
     padding-top: 100px;
     padding-bottom: 50px;
-    /* UPDATE THE URL BELOW WITH YOUR BACKGROUND IMAGE */
-    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), var(--bg-soft-blue);
-    /* background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url('assets/images/rainbow.JPEG'); */
+    /* Fullscreen Fixed Background with Gradient Overlay and Image */
+    background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.186)), url('assets/images/rainbow.JPEG');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -473,7 +472,7 @@ section {
 
 .hero-wrapper {
     background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(2px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: var(--radius-lg);
@@ -497,7 +496,9 @@ section {
     font-size: 5rem;
     color: white;
     margin-bottom: 25px;
-    text-shadow: 2px 4px 10px rgba(0, 0, 0, 0.3);
+    /* Playful sticker-like text border */
+    -webkit-text-stroke: 3px var(--text-dark);
+    text-shadow: 4px 4px 0px rgba(0, 0, 0, 0.8);
 }
 
 .hero-wrapper .highlight {
