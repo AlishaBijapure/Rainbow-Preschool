@@ -496,19 +496,17 @@ section {
     margin-bottom: 25px;
     line-height: 1.1;
     /* Clean, glitch-free black sticker outline using multiple overlapping drop shadows */
-    filter: drop-shadow(3px 3px 0px var(--text-dark)) 
-            drop-shadow(-3px -3px 0px var(--text-dark)) 
-            drop-shadow(-3px 3px 0px var(--text-dark)) 
-            drop-shadow(3px -3px 0px var(--text-dark)) 
-            drop-shadow(0px 10px 20px rgba(0, 0, 0, 0.5));
+    filter: drop-shadow(3px 3px 0px var(--text-dark)) drop-shadow(-3px -3px 0px var(--text-dark)) drop-shadow(-3px 3px 0px var(--text-dark)) drop-shadow(3px -3px 0px var(--text-dark)) drop-shadow(0px 10px 20px rgba(0, 0, 0, 0.5));
 }
 
-.rainbow-word, .preschool-word {
+.rainbow-word,
+.preschool-word {
     background: linear-gradient(to right, #FF3366, #FF9933, #FFD500, #33CC99, #3399FF, #9933FF);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     display: inline-block;
-    padding-bottom: 10px; /* Prevents text clipping on the bottom */
+    padding-bottom: 10px;
+    /* Prevents text clipping on the bottom */
 }
 
 .rainbow-word {
@@ -533,10 +531,10 @@ section {
     margin-right: auto;
     /* Clean black border effect using outside shadows */
     text-shadow: 1.5px 1.5px 0 var(--text-dark),
-                 -1.5px -1.5px 0 var(--text-dark),
-                 1.5px -1.5px 0 var(--text-dark),
-                 -1.5px 1.5px 0 var(--text-dark),
-                 0px 6px 10px rgba(0,0,0, 0.6);
+        -1.5px -1.5px 0 var(--text-dark),
+        1.5px -1.5px 0 var(--text-dark),
+        -1.5px 1.5px 0 var(--text-dark),
+        0px 6px 10px rgba(0, 0, 0, 0.6);
 }
 
 .hero-buttons {
@@ -558,14 +556,16 @@ section {
 }
 
 /* 2. USP & About Us - Unscrollable Background */
-.usp-section, .about-section {
+.usp-section,
+.about-section {
     position: relative;
     z-index: 2;
     /* Soft white overlay to ensure dark text remains perfectly readable */
-    background: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), url('assets/images/rainbow1.JPEG');
+    background: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 0)), url('assets/images/rainbow1.JPEG');
     background-size: cover;
     background-position: center;
-    background-attachment: fixed; /* unscrollable/parallax effect */
+    background-attachment: fixed;
+    /* unscrollable/parallax effect */
 }
 
 .about-block {
