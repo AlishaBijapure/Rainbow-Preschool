@@ -1,0 +1,26 @@
+{
+  "name": "rainbow-preschool",
+  "version": "1.0.0",
+  "description": "Preschool Website",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alishabijapure/Rainbow-Preschool.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alishabijapure/Rainbow-Preschool/issues"
+  },
+  "homepage": "https://github.com/alishabijapure/Rainbow-Preschool#readme",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^4.22.1",
+    "mongoose": "^7.8.9"
+  }
+}

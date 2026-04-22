@@ -158,6 +158,92 @@
 
         </section>
 
+        <!-- Instagram Feed Section -->
+        <section id="instagram-feed" class="instagram-section">
+            <div class="container text-center">
+                <h2 class="section-title">Follow Our Activities</h2>
+                <!-- Elfsight Instagram Feed | Untitled Instagram Feed -->
+                <script src="https://elfsightcdn.com/platform.js" async></script>
+                <div class="elfsight-app-374672b1-2b5f-4f7d-991a-d2a28c08a103" data-elfsight-app-lazy></div> 
+            </div>
+        </section>
+
+        <!-- Gallery Section -->
+        <section id="gallery" class="gallery-section">
+            <div class="container text-center">
+                <h2 class="section-title gallery-title">Moments of Joy</h2>
+                <div class="gallery-carousel-wrapper">
+                    <button class="gallery-arrow prev-arrow" id="galleryPrevBtn" onclick="scrollGallery(-1)">
+                        <span class="material-symbols-rounded">chevron_left</span>
+                    </button>
+                    <div class="gallery-carousel" id="galleryCarousel">
+                        <img src="assets/images/1.webp" alt="Gallery Image 1" loading="lazy">
+                        <img src="assets/images/2.webp" alt="Gallery Image 2" loading="lazy">
+                        <img src="assets/images/3.webp" alt="Gallery Image 3" loading="lazy">
+                        <img src="assets/images/4.webp" alt="Gallery Image 4" loading="lazy">
+                        <img src="assets/images/5.webp" alt="Gallery Image 5" loading="lazy">
+                        <img src="assets/images/7.webp" alt="Gallery Image 7" loading="lazy">
+                        <img src="assets/images/8.webp" alt="Gallery Image 8" loading="lazy">
+                        <img src="assets/images/10.webp" alt="Gallery Image 10" loading="lazy">
+                        <img src="assets/images/11.webp" alt="Gallery Image 11" loading="lazy">
+                        <img src="assets/images/12.webp" alt="Gallery Image 12" loading="lazy">
+                        <img src="assets/images/16.webp" alt="Gallery Image 16" loading="lazy">
+                        <img src="assets/images/19.webp" alt="Gallery Image 19" loading="lazy">
+                        <img src="assets/images/21.webp" alt="Gallery Image 21" loading="lazy">
+                        <img src="assets/images/22.webp" alt="Gallery Image 22" loading="lazy">
+                    </div>
+                    <button class="gallery-arrow next-arrow" id="galleryNextBtn" onclick="scrollGallery(1)">
+                        <span class="material-symbols-rounded">chevron_right</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const carousel = document.getElementById('galleryCarousel');
+                const prevBtn = document.getElementById('galleryPrevBtn');
+                const nextBtn = document.getElementById('galleryNextBtn');
+
+                if (carousel && prevBtn && nextBtn) {
+                    const updateArrows = () => {
+                        const scrollLeft = carousel.scrollLeft;
+                        const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+
+                        // Left arrow logic
+                        if (scrollLeft <= 5) {
+                            prevBtn.style.opacity = '0';
+                            prevBtn.style.pointerEvents = 'none';
+                        } else {
+                            prevBtn.style.opacity = '1';
+                            prevBtn.style.pointerEvents = 'auto';
+                        }
+
+                        // Right arrow logic
+                        if (scrollLeft >= maxScroll - 5) {
+                            nextBtn.style.opacity = '0';
+                            nextBtn.style.pointerEvents = 'none';
+                        } else {
+                            nextBtn.style.opacity = '1';
+                            nextBtn.style.pointerEvents = 'auto';
+                        }
+                    };
+
+                    carousel.addEventListener('scroll', updateArrows);
+                    window.addEventListener('resize', updateArrows);
+                    
+                    // Initialize
+                    setTimeout(updateArrows, 100); // Give layout time to paint
+                }
+            });
+
+            function scrollGallery(direction) {
+                const carousel = document.getElementById('galleryCarousel');
+                const scrollAmount = carousel.offsetWidth * 0.7; 
+                carousel.scrollBy({ left: scrollAmount * direction, behavior: 'smooth' });
+            }
+        </script>
+
         <!-- 4. Admissions Section -->
         <section id="admissions" class="admissions-section">
             <div class="container">
@@ -203,10 +289,7 @@
                                 <label for="childAge">Child's Age (Years)</label>
                                 <input type="number" id="childAge" placeholder="3" step="0.5" required>
                             </div>
-                            <div class="form-group">
-                                <label for="email">Email</label>
-                                <input type="email" id="email" placeholder="example@mail.com" required>
-                            </div>
+
                             <div class="form-group">
                                 <label for="phone">Phone Number</label>
                                 <input type="tel" id="phone" placeholder="+91 XXXXX XXXXX" required>
@@ -273,14 +356,6 @@
                         </div>
                     </div>
                 </div>
-                
-                <h3 class="text-center mt-5">School Gallery</h3>
-                <div class="gallery-grid mt-3">
-                    <div class="placeholder-img" data-text="Event Image 1"></div>
-                    <div class="placeholder-img" data-text="Event Image 2"></div>
-                    <div class="placeholder-img" data-text="Event Image 3"></div>
-                    <div class="placeholder-img" data-text="Event Image 4"></div>
-                </div>
             </div>
 
         </section>
@@ -336,5 +411,42 @@
     </footer>
 
     <script src="script.js"></script>
+    <script>
+        document.getElementById('inquiry-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const payload = {
+                parentName: document.getElementById('parentName').value,
+                childAge: Number(document.getElementById('childAge').value),
+                phone: document.getElementById('phone').value
+            };
+
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerText;
+            submitBtn.innerText = "Sending...";
+            submitBtn.disabled = true;
+
+            try {
+                const response = await fetch('http://localhost:3000/api/enquiries', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    alert('Thank you! Your inquiry has been submitted securely. Our admissions counselors will contact you shortly.');
+                    document.getElementById('inquiry-form').reset();
+                } else {
+                    const errData = await response.json().catch(() => ({}));
+                    alert('Failed to submit: ' + (errData.error || response.statusText));
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Network error. Please try again later.');
+            } finally {
+                submitBtn.innerText = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
 </body>
 </html>

@@ -593,7 +593,7 @@ section {
     padding: 40px;
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-card);
-    border: 1px solid rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(130, 44, 44, 0.6);
 }
 
 .about-block {
@@ -628,6 +628,13 @@ section {
     color: var(--text-dark);
 }
 
+#academics .section-subtitle {
+    color: var(--text-dark);
+    font-weight: 800;
+    -webkit-text-stroke: 1.5px white;
+    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4);
+}
+
 .program-card,
 .timeline-item .activity {
     background: rgba(255, 255, 255, 0.463) !important;
@@ -640,6 +647,7 @@ section {
 .timeline-item .activity {
     font-weight: 600;
 }
+
 .academics-section .age-badge {
     display: inline-block;
     padding: 4px 12px;
@@ -678,10 +686,14 @@ section {
 
 .timeline-item .time {
     width: 90px;
-    font-weight: 700;
+    font-weight: 800;
+    /* bolded */
     color: var(--purple);
     text-align: right;
     padding-right: 20px;
+    /* Clean white border */
+    -webkit-text-stroke: 1.5px white;
+    text-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
 }
 
 .timeline-item .activity {
@@ -709,6 +721,50 @@ section {
     border: 4px solid white;
     border-radius: 50%;
     z-index: 1;
+}
+
+/* Instagram Section */
+.instagram-section {
+    position: relative;
+    z-index: 2;
+    min-height: 100vh; /* Reverted to min-height so it can stretch if widget needs more room for 2 rows */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 80px;
+    padding-bottom: 80px;
+    background: linear-gradient(rgba(255, 255, 255, 0.308), rgba(255, 255, 255, 0.194)), url('assets/images/rainbow1.JPEG');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+.instagram-section .container {
+    width: 100%;
+    max-width: 1200px;
+    height: auto; /* Allow container to grow with the widget */
+    display: flex;
+    flex-direction: column;
+    background: rgba(255, 255, 255, 0.334);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: var(--radius-lg);
+    padding: 30px 40px; 
+    box-shadow: var(--shadow-card);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* Let the widget take native height to guarantee 2 rows are always visible */
+.elfsight-app-374672b1-2b5f-4f7d-991a-d2a28c08a103 {
+    width: 100%;
+    height: auto;
+}
+
+.instagram-section .section-title {
+    color: var(--text-dark);
+    -webkit-text-stroke: 1.5px white;
+    text-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 40px;
 }
 
 /* 4. Admissions */
@@ -780,6 +836,10 @@ section {
     font-size: 1rem;
     outline: none;
     transition: 0.3s;
+}
+
+.custom-form input::placeholder {
+    color: rgba(0, 0, 0, 0.3);
 }
 
 .custom-form input:focus {
@@ -1063,4 +1123,103 @@ section {
     .resources {
         flex-direction: column;
     }
+}
+
+/* ====== GALLERY SECTION ====== */
+.gallery-section {
+    padding: var(--spacing-xxl) 0;
+    /* Clean fresh yellow background instead of an image */
+    background: #fdf6bd; /* A fresh, soft yellow tint */
+    position: relative;
+    z-index: 1; 
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.gallery-section .gallery-title {
+    color: var(--text-dark, #1e293b);
+    text-shadow: none;
+}
+
+.gallery-carousel-wrapper {
+    position: relative;
+    width: 85vw; /* Increased from 66vw for a wider gallery */
+    margin: 0 auto;
+    border-radius: var(--radius-lg);
+    
+    /* Glassmorphism Effect */
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+    
+    padding: 15px;
+}
+
+.gallery-carousel {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+    border-radius: inherit;
+    gap: 10px;
+}
+
+.gallery-carousel::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
+.gallery-carousel img {
+    flex: 0 0 auto; /* Natural width */
+    width: auto; 
+    height: 65vh; /* Increased from 50vh for taller images */
+    max-height: 75vh; /* Allowed stronger maximum */
+    object-fit: contain; /* Maintain perfect proportions */
+    scroll-snap-align: start;
+    background-color: transparent;
+    border-radius: var(--radius-sm);
+}
+
+/* Arrows */
+.gallery-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--primary);
+    color: var(--white);
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: var(--shadow-md);
+    z-index: 10;
+    transition: var(--transition);
+}
+
+.gallery-arrow:hover {
+    background: var(--secondary);
+    color: var(--white);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.gallery-arrow.prev-arrow { left: -25px; }
+.gallery-arrow.next-arrow { right: -25px; }
+
+@media (max-width: 768px) {
+    /* Responsive adjustment for mobile arrows */
+    .gallery-arrow {
+        width: 35px;
+        height: 35px;
+    }
+    .gallery-arrow.prev-arrow { left: -17.5px; }
+    .gallery-arrow.next-arrow { right: -17.5px; }
 }
