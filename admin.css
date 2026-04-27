@@ -467,3 +467,101 @@ tbody tr td button {
     color: #EF4444;
     font-weight: 700;
 }
+
+/* ==========================================================================
+   Responsive Styles for Mobile & Tablet
+   ========================================================================== */
+
+/* Overlay for Mobile Sidebar */
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 99;
+    backdrop-filter: blur(2px);
+    transition: opacity 0.3s;
+}
+
+.sidebar-overlay[hidden] {
+    display: none;
+}
+
+@media (max-width: 1120px) {
+    /* Topbar updates */
+    .mobile-menu-btn {
+        display: flex !important;
+    }
+    .topbar {
+        padding: 0 15px;
+    }
+    
+    /* Off-canvas sidebar */
+    .sidebar {
+        position: fixed;
+        left: -260px;
+        top: 0;
+        height: 100vh;
+        z-index: 100;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 4px 0 10px rgba(0, 0, 0, 0.05);
+    }
+    .sidebar.is-open {
+        transform: translateX(260px);
+    }
+
+    /* Adjust main content padding */
+    .tab-content {
+        padding: 15px;
+    }
+    
+    /* Layout adjustments */
+    .filters-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .filters-bar .input-group {
+        width: 100%;
+    }
+    
+    .topbar-actions {
+        gap: 15px;
+    }
+    .user-profile {
+        display: none; /* Hide 'Admin' text on small screens */
+    }
+}
+
+@media (max-width: 768px) {
+    /* Stack form grids on mobile */
+    .form-grid-3, .form-grid-2 {
+        grid-template-columns: 1fr;
+    }
+
+    /* Specific adjustments for profile modal */
+    .profile-modal-content {
+        padding: 15px;
+        margin: 10px;
+    }
+
+    /* Actions in modal header */
+    .profile-modal-content > div:first-of-type {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .btn {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+
+    .modal-content {
+        max-height: 95vh;
+        width: 95%;
+        padding: 20px 15px;
+    }
+}
+

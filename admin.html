@@ -14,9 +14,10 @@
     <link rel="stylesheet" href="admin.css">
 </head>
 <body>
+    <div id="sidebarOverlay" class="sidebar-overlay" hidden></div>
     <div class="admin-layout">
         <!-- Sidebar -->
-        <aside class="sidebar">
+        <aside id="adminSidebar" class="sidebar">
             <div class="brand">
                 <h2><span class="rainbow-text">Admin</span> Panel</h2>
             </div>
@@ -44,7 +45,12 @@
         <!-- Main Content -->
         <main class="main-content">
             <header class="topbar">
-                <h1>Dashboard</h1>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <button id="sidebarToggle" class="icon-btn mobile-menu-btn" style="display: none;">
+                        <span class="material-symbols-rounded">menu</span>
+                    </button>
+                    <h1>Dashboard</h1>
+                </div>
                 <div class="topbar-actions">
                     <div class="academic-year-selector">
                         <label for="globalAcademicYear" class="material-symbols-rounded">calendar_month</label>
