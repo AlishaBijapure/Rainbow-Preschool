@@ -253,6 +253,7 @@ function applyFilters() {
     const classFilter = getValue('filterClass') || 'All';
     const pendingFilter = document.getElementById('filterPending')?.checked;
     const customFilter = document.getElementById('filterCustom')?.checked;
+    const concessionFilter = document.getElementById('filterConcession')?.checked;
     const searchFilter = getValue('searchName').toLowerCase().trim();
 
     const badge = document.getElementById('classFilterBaseFee');
@@ -291,6 +292,10 @@ function applyFilters() {
 
     if (customFilter) {
         filtered = filtered.filter(student => student.admissionType === 'Custom');
+    }
+
+    if (concessionFilter) {
+        filtered = filtered.filter(student => Number(student.fees?.concession) > 0);
     }
 
     const tbody = document.querySelector('#studentsTable tbody');
@@ -336,6 +341,11 @@ function applyFilters() {
 
     if (renderedCount === 0) {
         tbody.innerHTML = '<tr><td colspan="6" class="empty-row">No students match the selected filters.</td></tr>';
+    }
+
+    const countBadge = document.getElementById('studentCountBadge');
+    if (countBadge) {
+        countBadge.textContent = `${renderedCount} Selected`;
     }
 }
 

@@ -71,7 +71,7 @@
             <section id="dashboard" class="tab-content active">
                 <div class="card">
                     <div class="card-header">
-                        <h3>Enrolled Students</h3>
+                        <h3>Enrolled Students <span id="studentCountBadge" class="badge" style="background: rgba(157, 113, 232, 0.1); color: var(--purple); font-size: 0.8rem; margin-left: 10px; padding: 4px 10px;">0 Selected</span></h3>
                         <button class="btn btn-sm btn-primary" onclick="switchTab('add-student')">New Admission</button>
                     </div>
                     <div class="filters-bar" style="display: flex; gap: 15px; margin-bottom: 20px; align-items: center; background: var(--bg-light); padding: 15px; border-radius: var(--radius-md); flex-wrap: wrap;">
@@ -99,6 +99,10 @@
                         <div class="input-group" style="margin-bottom: 0; display: flex; align-items: center; gap: 10px;">
                             <input type="checkbox" id="filterCustom" onchange="applyFilters()" style="width: 20px; height: 20px;">
                             <label for="filterCustom" style="margin-bottom: 0;">Show Custom Admissions</label>
+                        </div>
+                        <div class="input-group" style="margin-bottom: 0; display: flex; align-items: center; gap: 10px;">
+                            <input type="checkbox" id="filterConcession" onchange="applyFilters()" style="width: 20px; height: 20px;">
+                            <label for="filterConcession" style="margin-bottom: 0;">Show Concession Students</label>
                         </div>
                     </div>
                     <div class="table-responsive">
