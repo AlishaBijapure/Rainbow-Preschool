@@ -353,3 +353,107 @@ tbody tr:hover {
 tbody tr td button {
     cursor: pointer;
 }
+
+/* Enquiry Tab & Actions */
+.enquiry-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.contact-toggle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    min-width: 80px;
+}
+
+.switch-track {
+    width: 44px;
+    height: 24px;
+    background: #E2E8F0;
+    border-radius: 12px;
+    position: relative;
+    cursor: pointer;
+    border: none;
+    transition: background 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    outline: none;
+}
+
+.switch-track:focus-visible {
+    box-shadow: 0 0 0 3px rgba(157, 113, 232, 0.3);
+}
+
+.switch-track.is-on {
+    background: #10B981; /* Green */
+}
+
+.switch-thumb {
+    width: 18px;
+    height: 18px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.switch-track.is-on .switch-thumb {
+    transform: translateX(20px);
+}
+
+.status-label {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+}
+
+.status-label.is-contacted {
+    color: #10B981;
+}
+
+.icon-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--bg-light);
+    color: var(--text-dark);
+}
+
+.icon-btn:hover {
+    transform: translateY(-2px);
+}
+
+.icon-btn.danger {
+    background: #FFF5F5;
+    color: #F56565;
+}
+
+.icon-btn.danger:hover {
+    background: #FED7D7;
+}
+
+.small-note {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.empty-row {
+    text-align: center;
+    padding: 40px !important;
+    color: var(--text-muted);
+    font-style: italic;
+}
