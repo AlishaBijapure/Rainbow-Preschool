@@ -1,27 +1,94 @@
-// Navigation Logic
+const API_BASE = '/api';
+
+let currentStudents = [];
+let currentEnquiries = [];
+
+document.addEventListener('DOMContentLoaded', () => {
+    initNavigation();
+    initForms();
+    initModals();
+
+    loadStudents();
+    loadFeeSettings();
+    fetchEnquiries();
+});
+
+function initNavigation() {
+    const sidebar = document.getElementById('adminSidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+    const setSidebarOpen = isOpen => {
+        if (!sidebar || !sidebarToggle || !sidebarOverlay) return;
+        sidebar.classList.toggle('is-open', isOpen);
+        document.body.classList.toggle('sidebar-open', isOpen);
+        sidebarToggle.setAttribute('aria-expanded', String(isOpen));
+        sidebarOverlay.hidden = !isOpen;
+    };
+
+    sidebarToggle?.addEventListener('click', () => {
+        setSidebarOpen(!sidebar?.classList.contains('is-open'));
+    });
+
+    sidebarOverlay?.addEventListener('click', () => setSidebarOpen(false));
+
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.addEventListener('click', event => {
+            const tabId = event.currentTarget.getAttribute('data-tab');
+            switchTab(tabId);
+            setSidebarOpen(false);
+        });
+    });
+
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 1120) setSidebarOpen(false);
+    });
+}
+
+function initForms() {
+    document.getElementById('addStudentForm')?.addEventListener('submit', handleAddStudent);
+    document.getElementById('feeCollectionForm')?.addEventListener('submit', handleFeeCollection);
+}
+
+function initModals() {
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('click', event => {
+            if (event.target === modal) closeModal(modal.id);
+        });
+    });
+
+    document.addEventListener('keydown', event => {
+        if (event.key !== 'Escape') return;
+        document.querySelectorAll('.modal.show').forEach(modal => closeModal(modal.id));
+    });
+}
+
 function switchTab(tabId) {
+    if (!tabId) return;
+
     document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
     document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-    
-    document.getElementById(tabId).classList.add('active');
-    document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
+
+    document.getElementById(tabId)?.classList.add('active');
+    const activeBtn = document.querySelector(`[data-tab="${tabId}"]`);
+    activeBtn?.classList.add('active');
+
+    const titleEl = document.getElementById('currentViewTitle');
+    const subtitleEl = document.getElementById('currentViewSubtitle');
+    if (activeBtn && titleEl && subtitleEl) {
+        titleEl.textContent = activeBtn.dataset.title || activeBtn.textContent.trim();
+        subtitleEl.textContent = activeBtn.dataset.subtitle || '';
+    }
 
     if (tabId === 'dashboard') loadStudents();
     if (tabId === 'fee-settings') loadFeeSettings();
     if (tabId === 'enquiries') fetchEnquiries();
 }
 
-document.querySelectorAll('.nav-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-        const tabId = e.currentTarget.getAttribute('data-tab');
-        switchTab(tabId);
-    });
-});
-
-// Age Calculation
 function calculateAge() {
-    const dobInput = document.getElementById('sDob').value;
-    if (!dobInput) return;
+    const dobInput = document.getElementById('sDob')?.value;
+    const ageInput = document.getElementById('sAge');
+    if (!dobInput || !ageInput) return;
 
     const dob = new Date(dobInput);
     const today = new Date();
@@ -38,19 +105,17 @@ function calculateAge() {
         months--;
     }
 
-    document.getElementById('sAge').value = `${years} Years, ${months} Months`;
+    ageInput.value = `${years} Years, ${Math.max(months, 0)} Months`;
 }
 
-// Address Copy
 function copyAddress() {
-    document.getElementById('tempAddr').value = document.getElementById('permAddr').value;
+    const tempAddr = document.getElementById('tempAddr');
+    const permAddr = document.getElementById('permAddr');
+    if (tempAddr && permAddr) tempAddr.value = permAddr.value;
 }
-
-// API Calls
-const API_BASE = 'http://localhost:3000/api';
 
 function getActiveYear() {
-    return document.getElementById('globalAcademicYear').value;
+    return document.getElementById('globalAcademicYear')?.value || '2026-27';
 }
 
 function onAcademicYearChange() {
@@ -60,24 +125,29 @@ function onAcademicYearChange() {
 
 async function loadFeeSettings() {
     try {
-        const year = getActiveYear();
-        const res = await fetch(`${API_BASE}/fees?academicYear=${year}`);
-        const fees = await res.json();
-        
-        // Reset fields
-        document.getElementById('feePlaygroup').value = '';
-        document.getElementById('feeNursery').value = '';
-        document.getElementById('feeLKG').value = '';
-        document.getElementById('feeUKG').value = '';
+        const response = await fetch(`${API_BASE}/fees?academicYear=${encodeURIComponent(getActiveYear())}`);
+        const fees = await response.json();
+
+        ['feePlaygroup', 'feeNursery', 'feeLKG', 'feeUKG'].forEach(id => {
+            const input = document.getElementById(id);
+            if (input) input.value = '';
+        });
+
+        if (!Array.isArray(fees)) return;
 
         fees.forEach(fee => {
-            if (fee.classLevel === 'Playgroup') document.getElementById('feePlaygroup').value = fee.baseFee;
-            if (fee.classLevel === 'Nursery') document.getElementById('feeNursery').value = fee.baseFee;
-            if (fee.classLevel === 'LKG') document.getElementById('feeLKG').value = fee.baseFee;
-            if (fee.classLevel === 'UKG') document.getElementById('feeUKG').value = fee.baseFee;
+            const fieldMap = {
+                Playgroup: 'feePlaygroup',
+                Nursery: 'feeNursery',
+                LKG: 'feeLKG',
+                UKG: 'feeUKG'
+            };
+
+            const input = document.getElementById(fieldMap[fee.classLevel]);
+            if (input) input.value = fee.baseFee;
         });
-    } catch (err) {
-        console.error('Error loading fees', err);
+    } catch (error) {
+        console.error('Error loading fees', error);
     }
 }
 
@@ -90,440 +160,414 @@ async function saveFeeSettings() {
     ];
 
     try {
-        for (let cls of classes) {
-            const val = document.getElementById(cls.id).value;
-            if (val) {
-                await fetch(`${API_BASE}/fees`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        classLevel: cls.level, 
-                        baseFee: Number(val),
-                        academicYear: getActiveYear()
-                    })
-                });
-            }
+        for (const cls of classes) {
+            const val = document.getElementById(cls.id)?.value;
+            if (!val) continue;
+
+            await fetch(`${API_BASE}/fees`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    classLevel: cls.level,
+                    baseFee: Number(val),
+                    academicYear: getActiveYear()
+                })
+            });
         }
-        alert('Fee Settings Saved Successfully!');
-    } catch (err) {
-        alert('Error saving fee settings');
-        console.error(err);
+
+        alert('Fee settings saved successfully.');
+    } catch (error) {
+        alert('Error saving fee settings.');
+        console.error(error);
     }
 }
 
-// Add Student Form Submit
-document.addEventListener('DOMContentLoaded', () => {
-    loadStudents();
-    loadFeeSettings();
-    fetchEnquiries();
-});
+async function handleAddStudent(event) {
+    event.preventDefault();
 
-document.getElementById('addStudentForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    // Construct payload
-    const isCustom = document.getElementById('sIsCustom').checked;
-    
+    const isCustom = document.getElementById('sIsCustom')?.checked;
+
     const payload = {
         academicYear: getActiveYear(),
-        firstName: document.getElementById('sfName').value,
-        lastName: document.getElementById('slName').value,
-        dob: document.getElementById('sDob').value,
-        classAdmitted: document.getElementById('sClass').value,
-        concession: Number(document.getElementById('sConcession').value) || 0,
+        firstName: getValue('sfName'),
+        lastName: getValue('slName'),
+        dob: getValue('sDob'),
+        classAdmitted: getValue('sClass'),
+        concession: Number(getValue('sConcession')) || 0,
         admissionType: isCustom ? 'Custom' : 'Normal',
-        customStartDate: isCustom ? document.getElementById('sCustomStart').value : null,
-        customEndDate: isCustom ? document.getElementById('sCustomEnd').value : null,
-        customBaseFee: isCustom ? Number(document.getElementById('sCustomFee').value) : null,
+        customStartDate: isCustom ? getValue('sCustomStart') : null,
+        customEndDate: isCustom ? getValue('sCustomEnd') : null,
+        customBaseFee: isCustom ? Number(getValue('sCustomFee')) : null,
         motherDetails: {
-            name: document.getElementById('mName').value,
-            phone: document.getElementById('mPhone').value,
-            occupation: document.getElementById('mOcc').value,
-            education: document.getElementById('mEdu').value
+            name: getValue('mName'),
+            phone: getValue('mPhone'),
+            occupation: getValue('mOcc'),
+            education: getValue('mEdu')
         },
         fatherDetails: {
-            name: document.getElementById('fName').value,
-            phone: document.getElementById('fPhone').value,
-            occupation: document.getElementById('fOcc').value,
-            education: document.getElementById('fEdu').value
+            name: getValue('fName'),
+            phone: getValue('fPhone'),
+            occupation: getValue('fOcc'),
+            education: getValue('fEdu')
         },
-        permanentAddress: document.getElementById('permAddr').value,
-        tempAddress: document.getElementById('tempAddr').value
+        permanentAddress: getValue('permAddr'),
+        tempAddress: getValue('tempAddr')
     };
 
     try {
-        const res = await fetch(`${API_BASE}/students`, {
+        const response = await fetch(`${API_BASE}/students`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
-        
-        if (res.ok) {
-            alert('Student Admitted Successfully!');
-            document.getElementById('addStudentForm').reset();
-            switchTab('dashboard');
-        } else {
-            const error = await res.json();
-            alert('Error: ' + error.error);
+
+        if (!response.ok) {
+            const error = await response.json().catch(() => ({}));
+            throw new Error(error.error || 'Submission failed');
         }
-    } catch (err) {
-        console.error('Error adding student', err);
-        alert('Submission failed');
+
+        alert('Student admitted successfully.');
+        event.target.reset();
+        toggleCustomAdmission();
+        switchTab('dashboard');
+    } catch (error) {
+        console.error('Error adding student', error);
+        alert(error.message || 'Submission failed.');
     }
-});
+}
 
-// State for loaded students
-let currentStudents = [];
-
-// Load Students Data Table
 async function loadStudents() {
     try {
-        const year = getActiveYear();
-        const res = await fetch(`${API_BASE}/students?academicYear=${year}`);
-        currentStudents = await res.json();
+        const response = await fetch(`${API_BASE}/students?academicYear=${encodeURIComponent(getActiveYear())}`);
+        currentStudents = await response.json();
+        if (!Array.isArray(currentStudents)) currentStudents = [];
         applyFilters();
-    } catch (err) {
-        console.error('Error loading students', err);
+    } catch (error) {
+        currentStudents = [];
+        applyFilters();
+        console.error('Error loading students', error);
     }
 }
 
 function applyFilters() {
-    const classFilter = document.getElementById('filterClass').value;
-    const pendingFilter = document.getElementById('filterPending').checked;
-    const customFilter = document.getElementById('filterCustom').checked;
-    const searchFilter = document.getElementById('searchName').value.toLowerCase().trim();
+    const classFilter = getValue('filterClass') || 'All';
+    const pendingFilter = document.getElementById('filterPending')?.checked;
+    const customFilter = document.getElementById('filterCustom')?.checked;
+    const searchFilter = getValue('searchName').toLowerCase().trim();
 
     let filtered = currentStudents;
 
     if (searchFilter) {
-        filtered = filtered.filter(s => {
-            const fullName = `${s.firstName || ''} ${s.lastName || ''}`.toLowerCase();
+        filtered = filtered.filter(student => {
+            const fullName = `${student.firstName || ''} ${student.lastName || ''}`.toLowerCase();
             return fullName.includes(searchFilter);
         });
     }
 
     if (classFilter !== 'All') {
-        filtered = filtered.filter(s => s.classAdmitted === classFilter);
+        filtered = filtered.filter(student => student.classAdmitted === classFilter);
     }
 
     if (customFilter) {
-        filtered = filtered.filter(s => s.admissionType === 'Custom');
+        filtered = filtered.filter(student => student.admissionType === 'Custom');
     }
 
     const tbody = document.querySelector('#studentsTable tbody');
+    if (!tbody) return;
     tbody.innerHTML = '';
 
+    let renderedCount = 0;
+
     filtered.forEach(student => {
-        const baseFee = student.fees?.baseFeeAtAdmission || 0;
-        const concession = student.fees?.concession || 0;
-        const totalPaid = student.fees?.installments?.reduce((sum, inst) => sum + inst.amountPaid, 0) || 0;
+        const baseFee = Number(student.fees?.baseFeeAtAdmission) || 0;
+        const concession = Number(student.fees?.concession) || 0;
+        const totalPaid = student.fees?.installments?.reduce((sum, inst) => sum + Number(inst.amountPaid || 0), 0) || 0;
         const netFee = baseFee - concession;
         const balance = netFee - totalPaid;
 
-        if (pendingFilter && balance <= 0) {
-            return; // skip if not pending
-        }
+        if (pendingFilter && balance <= 0) return;
 
-        const dob = new Date(student.dob);
-        const today = new Date();
-        let ageYears = today.getFullYear() - dob.getFullYear();
-        let ageMonths = today.getMonth() - dob.getMonth();
-        if (ageMonths < 0) {
-            ageYears--;
-            ageMonths += 12;
-        }
-
+        renderedCount++;
+        const dob = safeDate(student.dob);
+        const age = getAgeLabel(dob);
         const tr = document.createElement('tr');
-        tr.onclick = (e) => {
-            // Prevent opening profile if clicking the Add Fee button
-            if (e.target.tagName === 'BUTTON' || e.target.parentElement.tagName === 'BUTTON') return;
-            openProfileModal(student);
-        };
-        
+        tr.addEventListener('click', () => openProfileModal(student));
+
         tr.innerHTML = `
-            <td><strong>${student.firstName} ${student.lastName}</strong></td>
-            <td>${student.classAdmitted}</td>
-            <td>${dob.toLocaleDateString()} (${ageYears}y ${ageMonths}m)</td>
+            <td><strong>${escapeHtml(student.firstName)} ${escapeHtml(student.lastName)}</strong></td>
+            <td>${escapeHtml(student.classAdmitted)}</td>
+            <td>${formatDate(dob)} <span class="small-note">${age}</span></td>
             <td>
-                ₹${baseFee} 
-                ${concession > 0 ? `<br><small class="text-muted">-₹${concession} conc.</small>` : ''}
+                ${formatCurrency(baseFee)}
+                ${concession > 0 ? `<span class="small-note">-${formatCurrency(concession)} concession</span>` : ''}
             </td>
-            <td style="color: green; font-weight: 600;">₹${totalPaid}</td>
-            <td style="color: ${balance > 0 ? 'red' : 'green'}; font-weight: 600;">₹${balance}</td>
+            <td><span class="amount-positive">${formatCurrency(totalPaid)}</span></td>
+            <td><span class="${balance > 0 ? 'amount-negative' : 'amount-positive'}">${formatCurrency(balance)}</span></td>
             <td>
-                <button class="btn btn-sm btn-outline" onclick="openFeeModal('${student._id}', '${student.firstName} ${student.lastName}', ${balance})">
-                    Add Fee
-                </button>
+                <button class="btn btn-sm btn-outline" type="button" data-fee-button>Add Fee</button>
             </td>
         `;
+
+        const feeButton = tr.querySelector('[data-fee-button]');
+        feeButton?.addEventListener('click', event => {
+            event.stopPropagation();
+            openFeeModal(student._id, `${student.firstName || ''} ${student.lastName || ''}`.trim(), balance);
+        });
+
         tbody.appendChild(tr);
     });
-}
 
-function toggleCustomAdmission() {
-    const isCustom = document.getElementById('sIsCustom').checked;
-    const fieldsDiv = document.getElementById('customAdmissionFields');
-    if (isCustom) {
-        fieldsDiv.style.display = 'grid'; // because it's form-grid-3
-        document.getElementById('sCustomStart').required = true;
-        document.getElementById('sCustomEnd').required = true;
-        document.getElementById('sCustomFee').required = true;
-    } else {
-        fieldsDiv.style.display = 'none';
-        document.getElementById('sCustomStart').required = false;
-        document.getElementById('sCustomEnd').required = false;
-        document.getElementById('sCustomFee').required = false;
+    if (renderedCount === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="empty-row">No students match the selected filters.</td></tr>';
     }
 }
 
-// Fee Modal Logic
-const feeModal = document.getElementById('feeModal');
+function toggleCustomAdmission() {
+    const isCustom = document.getElementById('sIsCustom')?.checked;
+    const fieldsDiv = document.getElementById('customAdmissionFields');
+    if (!fieldsDiv) return;
+
+    fieldsDiv.hidden = !isCustom;
+
+    ['sCustomStart', 'sCustomEnd', 'sCustomFee'].forEach(id => {
+        const input = document.getElementById(id);
+        if (input) input.required = Boolean(isCustom);
+    });
+}
 
 function openFeeModal(studentId, studentName, balance) {
     document.getElementById('fcStudentId').value = studentId;
-    document.getElementById('feeModalStudentInfo').innerText = `Recording payment for ${studentName}. Remaining Balance: ₹${balance}`;
+    document.getElementById('feeModalStudentInfo').textContent = `Recording payment for ${studentName}. Remaining Balance: ${formatCurrency(balance)}`;
     document.getElementById('fcAmount').value = balance > 0 ? balance : 0;
-    
-    // set today's date
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('fcDate').value = today;
-
-    feeModal.classList.add('show');
+    document.getElementById('fcDate').value = new Date().toISOString().split('T')[0];
+    document.getElementById('feeModal')?.classList.add('show');
 }
 
 function closeModal(modalId) {
-    document.getElementById(modalId).classList.remove('show');
-    if (modalId === 'feeModal') document.getElementById('feeCollectionForm').reset();
-    if (modalId === 'profileModal') toggleEditProfile(false); // turn off edit mode
+    document.getElementById(modalId)?.classList.remove('show');
+    if (modalId === 'feeModal') document.getElementById('feeCollectionForm')?.reset();
+    if (modalId === 'profileModal') toggleEditProfile(true);
 }
 
-document.getElementById('feeCollectionForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const studentId = document.getElementById('fcStudentId').value;
+async function handleFeeCollection(event) {
+    event.preventDefault();
+
+    const studentId = getValue('fcStudentId');
     const payload = {
-        amountPaid: Number(document.getElementById('fcAmount').value),
-        date: document.getElementById('fcDate').value,
-        payerName: document.getElementById('fcPayer').value,
-        receiverName: document.getElementById('fcReceiver').value,
-        paymentMode: document.getElementById('fcPaymentMode').value || 'Cash'
+        amountPaid: Number(getValue('fcAmount')),
+        date: getValue('fcDate'),
+        payerName: getValue('fcPayer'),
+        receiverName: getValue('fcReceiver'),
+        paymentMode: getValue('fcPaymentMode') || 'Cash'
     };
 
     try {
-        const res = await fetch(`${API_BASE}/students/${studentId}/fees`, {
+        const response = await fetch(`${API_BASE}/students/${studentId}/fees`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
 
-        if (res.ok) {
-            alert('Payment Recorded Successfully!');
-            closeModal('feeModal');
-            loadStudents(); // Refresh table
-        } else {
-            const err = await res.json();
-            alert('Error: ' + err.error);
+        if (!response.ok) {
+            const error = await response.json().catch(() => ({}));
+            throw new Error(error.error || 'Failed to record payment');
         }
-    } catch (err) {
-        console.error(err);
-        alert('Failed to record payment');
-    }
-});
 
-// Profile Modal Logic
+        alert('Payment recorded successfully.');
+        closeModal('feeModal');
+        loadStudents();
+    } catch (error) {
+        console.error(error);
+        alert(error.message || 'Failed to record payment.');
+    }
+}
+
 function openProfileModal(student) {
     document.getElementById('profId').value = student._id;
-    document.getElementById('profName').innerText = `${student.firstName} ${student.lastName} Profile`;
-    
-    // Admission Badge & Setup
-    const aType = student.admissionType || 'Normal';
-    const badge = document.getElementById('profAdmissionBadge');
-    badge.innerText = aType + ' Admission';
-    badge.style.background = aType === 'Custom' ? 'var(--secondary)' : 'var(--purple)';
+    document.getElementById('profName').textContent = `${student.firstName || ''} ${student.lastName || ''} Profile`.trim();
 
-    document.getElementById('pAdmissionType').value = aType;
-    if (aType === 'Custom') {
-        document.getElementById('pCustomStart').value = student.customStartDate ? new Date(student.customStartDate).toISOString().split('T')[0] : '';
-        document.getElementById('pCustomEnd').value = student.customEndDate ? new Date(student.customEndDate).toISOString().split('T')[0] : '';
-        document.getElementById('pCustomFee').value = student.fees?.baseFeeAtAdmission || 0;
+    const admissionType = student.admissionType || 'Normal';
+    const badge = document.getElementById('profAdmissionBadge');
+    if (badge) {
+        badge.textContent = `${admissionType} Admission`;
+        badge.className = `profile-badge ${admissionType === 'Custom' ? 'is-custom' : ''}`.trim();
     }
-    document.getElementById('pConcession').value = student.fees?.concession || 0;
+
+    setValue('pAdmissionType', admissionType);
+    setValue('pCustomStart', student.customStartDate ? new Date(student.customStartDate).toISOString().split('T')[0] : '');
+    setValue('pCustomEnd', student.customEndDate ? new Date(student.customEndDate).toISOString().split('T')[0] : '');
+    setValue('pCustomFee', student.fees?.baseFeeAtAdmission || 0);
+    setValue('pConcession', student.fees?.concession || 0);
     toggleProfileCustomFields();
 
-    // Fill text inputs
-    document.getElementById('pFirstName').value = student.firstName;
-    document.getElementById('pLastName').value = student.lastName;
-    document.getElementById('pClass').value = student.classAdmitted;
-    document.getElementById('pDob').value = new Date(student.dob).toISOString().split('T')[0];
-    
-    document.getElementById('pMName').value = student.motherDetails?.name || '';
-    document.getElementById('pMPhone').value = student.motherDetails?.phone || '';
-    document.getElementById('pMOcc').value = student.motherDetails?.occupation || '';
-    document.getElementById('pMEdu').value = student.motherDetails?.education || '';
-    
-    document.getElementById('pFName').value = student.fatherDetails?.name || '';
-    document.getElementById('pFPhone').value = student.fatherDetails?.phone || '';
-    document.getElementById('pFOcc').value = student.fatherDetails?.occupation || '';
-    document.getElementById('pFEdu').value = student.fatherDetails?.education || '';
-    
-    document.getElementById('pPAddr').value = student.permanentAddress || '';
-    document.getElementById('pTAddr').value = student.tempAddress || '';
+    setValue('pFirstName', student.firstName || '');
+    setValue('pLastName', student.lastName || '');
+    setValue('pClass', student.classAdmitted || '');
+    setValue('pDob', student.dob ? new Date(student.dob).toISOString().split('T')[0] : '');
 
-    // Load Installments History
+    setValue('pMName', student.motherDetails?.name || '');
+    setValue('pMPhone', student.motherDetails?.phone || '');
+    setValue('pMOcc', student.motherDetails?.occupation || '');
+    setValue('pMEdu', student.motherDetails?.education || '');
+
+    setValue('pFName', student.fatherDetails?.name || '');
+    setValue('pFPhone', student.fatherDetails?.phone || '');
+    setValue('pFOcc', student.fatherDetails?.occupation || '');
+    setValue('pFEdu', student.fatherDetails?.education || '');
+
+    setValue('pPAddr', student.permanentAddress || '');
+    setValue('pTAddr', student.tempAddress || '');
+
+    renderInstallments(student.fees?.installments || []);
+    toggleEditProfile(true);
+    document.getElementById('profileModal')?.classList.add('show');
+}
+
+function renderInstallments(installments) {
     const tbody = document.querySelector('#profInstallmentsTable tbody');
-    tbody.innerHTML = '';
-    const installments = student.fees?.installments || [];
-    
-    if (installments.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">No payments recorded.</td></tr>';
-    } else {
-        installments.forEach(inst => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${new Date(inst.date).toLocaleDateString()}</td>
-                <td style="color: green; font-weight: 600;">₹${inst.amountPaid}</td>
-                <td>${inst.payerName}</td>
-                <td>${inst.receiverName}</td>
-                <td><span class="badge ${inst.paymentMode === 'Online' ? 'bg-primary' : 'bg-secondary'}" style="padding: 4px 8px; border-radius: 4px; color: white; font-size: 11px;">${inst.paymentMode || 'Cash'}</span></td>
-            `;
-            tbody.appendChild(row);
-        });
+    if (!tbody) return;
+
+    if (!installments.length) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-row">No payments recorded.</td></tr>';
+        return;
     }
 
-    toggleEditProfile(true); // Always lock it when opening
-    document.getElementById('profileModal').classList.add('show');
+    tbody.innerHTML = '';
+    installments.forEach(inst => {
+        const row = document.createElement('tr');
+        const mode = inst.paymentMode || 'Cash';
+
+        row.innerHTML = `
+            <td>${formatDate(safeDate(inst.date))}</td>
+            <td><span class="amount-positive">${formatCurrency(inst.amountPaid)}</span></td>
+            <td>${escapeHtml(inst.payerName)}</td>
+            <td>${escapeHtml(inst.receiverName)}</td>
+            <td><span class="badge ${mode === 'Online' ? 'bg-primary' : 'bg-secondary'}">${escapeHtml(mode)}</span></td>
+        `;
+
+        tbody.appendChild(row);
+    });
 }
 
 function toggleProfileCustomFields() {
-    const type = document.getElementById('pAdmissionType').value;
-    const isCustom = type === 'Custom';
-    const customGroups = document.querySelectorAll('.pCustomGroup');
-    customGroups.forEach(g => {
-        g.style.display = isCustom ? 'block' : 'none';
-        const input = g.querySelector('input');
+    const isCustom = getValue('pAdmissionType') === 'Custom';
+    document.querySelectorAll('.pCustomGroup').forEach(group => {
+        group.hidden = !isCustom;
+        const input = group.querySelector('input');
         if (input) input.required = isCustom;
     });
 }
 
 function toggleEditProfile(forceOff = false) {
-    const isCurrentlyEditing = document.getElementById('pFirstName').readOnly === false;
+    const firstNameInput = document.getElementById('pFirstName');
+    const isCurrentlyEditing = firstNameInput ? firstNameInput.readOnly === false : false;
     const shouldEdit = forceOff ? false : !isCurrentlyEditing;
-    
-    const fields = [
-        'pFirstName', 'pLastName', 'pDob', 'pMName', 'pMPhone', 'pMOcc', 'pMEdu', 
-        'pFName', 'pFPhone', 'pFOcc', 'pFEdu', 'pPAddr', 'pTAddr', 
+
+    [
+        'pFirstName', 'pLastName', 'pDob', 'pMName', 'pMPhone', 'pMOcc', 'pMEdu',
+        'pFName', 'pFPhone', 'pFOcc', 'pFEdu', 'pPAddr', 'pTAddr',
         'pCustomStart', 'pCustomEnd', 'pCustomFee', 'pConcession'
-    ];
-    
-    fields.forEach(id => {
+    ].forEach(id => {
         const el = document.getElementById(id);
-        if(el) el.readOnly = !shouldEdit;
+        if (el) el.readOnly = !shouldEdit;
     });
-    
-    document.getElementById('pClass').disabled = !shouldEdit;
-    document.getElementById('pAdmissionType').disabled = !shouldEdit;
-    
-    if (shouldEdit) {
-        document.getElementById('profSaveContainer').style.display = 'block';
-        document.getElementById('btnEditProf').style.display = 'none';
-    } else {
-        document.getElementById('profSaveContainer').style.display = 'none';
-        document.getElementById('btnEditProf').style.display = 'inline-flex';
-    }
+
+    const classSelect = document.getElementById('pClass');
+    const admissionSelect = document.getElementById('pAdmissionType');
+    if (classSelect) classSelect.disabled = !shouldEdit;
+    if (admissionSelect) admissionSelect.disabled = !shouldEdit;
+
+    const saveContainer = document.getElementById('profSaveContainer');
+    const editButton = document.getElementById('btnEditProf');
+    if (saveContainer) saveContainer.hidden = !shouldEdit;
+    if (editButton) editButton.hidden = shouldEdit;
 }
 
 async function saveProfileChanges() {
-    const studentId = document.getElementById('profId').value;
-    const aType = document.getElementById('pAdmissionType').value;
+    const studentId = getValue('profId');
+    const admissionType = getValue('pAdmissionType');
+
     const payload = {
-        firstName: document.getElementById('pFirstName').value,
-        lastName: document.getElementById('pLastName').value,
-        dob: document.getElementById('pDob').value,
-        classAdmitted: document.getElementById('pClass').value,
-        admissionType: aType,
+        firstName: getValue('pFirstName'),
+        lastName: getValue('pLastName'),
+        dob: getValue('pDob'),
+        classAdmitted: getValue('pClass'),
+        admissionType,
         motherDetails: {
-            name: document.getElementById('pMName').value,
-            phone: document.getElementById('pMPhone').value,
-            occupation: document.getElementById('pMOcc').value,
-            education: document.getElementById('pMEdu').value
+            name: getValue('pMName'),
+            phone: getValue('pMPhone'),
+            occupation: getValue('pMOcc'),
+            education: getValue('pMEdu')
         },
         fatherDetails: {
-            name: document.getElementById('pFName').value,
-            phone: document.getElementById('pFPhone').value,
-            occupation: document.getElementById('pFOcc').value,
-            education: document.getElementById('pFEdu').value
+            name: getValue('pFName'),
+            phone: getValue('pFPhone'),
+            occupation: getValue('pFOcc'),
+            education: getValue('pFEdu')
         },
-        permanentAddress: document.getElementById('pPAddr').value,
-        tempAddress: document.getElementById('pTAddr').value
+        permanentAddress: getValue('pPAddr'),
+        tempAddress: getValue('pTAddr'),
+        updateConcession: Number(getValue('pConcession')) || 0
     };
 
-    if (aType === 'Custom') {
-        payload.customStartDate = document.getElementById('pCustomStart').value;
-        payload.customEndDate = document.getElementById('pCustomEnd').value;
-        payload.baseFeeAtAdmission = Number(document.getElementById('pCustomFee').value);
+    if (admissionType === 'Custom') {
+        payload.customStartDate = getValue('pCustomStart');
+        payload.customEndDate = getValue('pCustomEnd');
+        payload.baseFeeAtAdmission = Number(getValue('pCustomFee'));
     } else {
         payload.customStartDate = null;
         payload.customEndDate = null;
     }
-    
-    payload.updateConcession = Number(document.getElementById('pConcession').value) || 0;
 
     try {
-        const res = await fetch(`${API_BASE}/students/${studentId}`, {
+        const response = await fetch(`${API_BASE}/students/${studentId}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
 
-        if (res.ok) {
-            alert('Profile Updated Successfully!');
-            closeModal('profileModal');
-            loadStudents();
-        } else {
-            alert('Error updating profile');
-        }
-    } catch (err) {
-        console.error(err);
-        alert('Failed to update profile');
+        if (!response.ok) throw new Error('Error updating profile');
+
+        alert('Profile updated successfully.');
+        closeModal('profileModal');
+        loadStudents();
+    } catch (error) {
+        console.error(error);
+        alert('Failed to update profile.');
     }
 }
 
 async function deleteStudent() {
-    const studentId = document.getElementById('profId').value;
+    const studentId = getValue('profId');
     const confirmDelete = confirm('Are you sure you want to permanently delete this student? This action cannot be undone.');
-    
-    if (confirmDelete) {
-        try {
-            const res = await fetch(`${API_BASE}/students/${studentId}`, {
-                method: 'DELETE'
-            });
-            if (res.ok) {
-                alert('Student deleted entirely.');
-                closeModal('profileModal');
-                loadStudents();
-            } else {
-                alert('Error deleting student.');
-            }
-        } catch(err) {
-            console.error(err);
-            alert('Failed to delete student.');
-        }
+    if (!confirmDelete) return;
+
+    try {
+        const response = await fetch(`${API_BASE}/students/${studentId}`, {
+            method: 'DELETE'
+        });
+
+        if (!response.ok) throw new Error('Error deleting student');
+
+        alert('Student deleted entirely.');
+        closeModal('profileModal');
+        loadStudents();
+    } catch (error) {
+        console.error(error);
+        alert('Failed to delete student.');
     }
 }
 
-// Init
-window.onload = () => {
-    loadStudents();
-};
-
-// --- ENQUIRIES LOGIC ---
-let currentEnquiries = [];
-
 async function fetchEnquiries() {
     try {
-        const res = await fetch(`${API_BASE}/enquiries`);
-        currentEnquiries = await res.json();
+        const response = await fetch(`${API_BASE}/enquiries`);
+        currentEnquiries = await response.json();
+        if (!Array.isArray(currentEnquiries)) currentEnquiries = [];
         renderEnquiries();
-    } catch (err) {
-        console.error('Error fetching enquiries:', err);
+    } catch (error) {
+        currentEnquiries = [];
+        renderEnquiries();
+        console.error('Error fetching enquiries:', error);
     }
 }
 
@@ -532,82 +576,126 @@ function renderEnquiries() {
     if (!tbody) return;
     tbody.innerHTML = '';
 
-    if (!currentEnquiries || currentEnquiries.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 20px;">No enquiries received yet.</td></tr>`;
+    if (!currentEnquiries.length) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-row">No enquiries received yet.</td></tr>';
         return;
     }
 
-    currentEnquiries.forEach(enq => {
-        const date = new Date(enq.createdAt);
+    currentEnquiries.forEach(enquiry => {
+        const date = safeDate(enquiry.createdAt);
         const tr = document.createElement('tr');
+        const isContacted = Boolean(enquiry.contacted);
+
         tr.innerHTML = `
             <td>
-                <strong>${date.toLocaleDateString()}</strong><br>
-                <small>${date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</small>
+                <strong>${formatDate(date)}</strong>
+                <span class="small-note">${formatTime(date)}</span>
             </td>
-            <td><strong>${enq.parentName}</strong></td>
-            <td>${enq.childAge} yrs</td>
-            <td><a href="tel:${enq.phone}">${enq.phone}</a></td>
-            <td style="vertical-align: middle;">
-                <div style="display: flex; align-items: center; gap: 14px;">
-                    <!-- Custom Premium Toggle Switch with Label -->
-                    <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
-                        <div style="width: 44px; height: 24px; background: ${enq.contacted ? 'var(--success, #22c55e)' : 'var(--danger)'}; border-radius: 12px; position: relative; cursor: pointer; transition: background 0.3s;" 
-                             onclick="toggleEnquiryContacted('${enq._id}', ${!enq.contacted})"
-                             title="${enq.contacted ? 'Mark as Pending' : 'Mark as Contacted'}">
-                            <div style="width: 20px; height: 20px; background: white; border-radius: 50%; position: absolute; top: 2px; left: ${enq.contacted ? '22px' : '2px'}; transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 2px 4px rgba(0,0,0,0.2);"></div>
-                        </div>
-                        <small style="font-size: 11px; font-weight: 600; color: ${enq.contacted ? 'var(--success, #22c55e)' : 'var(--danger)'};">${enq.contacted ? 'Contacted' : 'Pending'}</small>
+            <td><strong>${escapeHtml(enquiry.parentName)}</strong></td>
+            <td>${escapeHtml(enquiry.childAge)} yrs</td>
+            <td><a href="tel:${escapeAttribute(enquiry.phone)}">${escapeHtml(enquiry.phone)}</a></td>
+            <td>
+                <div class="enquiry-actions">
+                    <div class="contact-toggle">
+                        <button class="switch-track ${isContacted ? 'is-on' : ''}" type="button" onclick="toggleEnquiryContacted('${escapeAttribute(enquiry._id)}', ${!isContacted})" title="${isContacted ? 'Mark as Pending' : 'Mark as Contacted'}">
+                            <span class="switch-thumb"></span>
+                        </button>
+                        <span class="status-label ${isContacted ? 'is-contacted' : ''}">${isContacted ? 'Contacted' : 'Pending'}</span>
                     </div>
-                    
-                    <!-- Premium Soft Delete Button (Dustbin) -->
-                    <div style="width: 32px; height: 32px; border-radius: 8px; background: #fee2e2; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.2s ease, transform 0.1s;" 
-                         onmouseover="this.style.background='#fca5a5'" 
-                         onmouseout="this.style.background='#fee2e2'"
-                         onmousedown="this.style.transform='scale(0.9)'"
-                         onmouseup="this.style.transform='scale(1)'"
-                         onmouseleave="this.style.transform='scale(1)'"
-                         onclick="deleteEnquiry('${enq._id}')" 
-                         title="Delete Enquiry">
-                        <span class="material-symbols-rounded" style="color: var(--danger); font-size: 18px;">delete</span>
-                    </div>
+                    <button class="icon-btn danger" type="button" onclick="deleteEnquiry('${escapeAttribute(enquiry._id)}')" title="Delete Enquiry">
+                        <span class="material-symbols-rounded">delete</span>
+                    </button>
                 </div>
             </td>
         `;
+
         tbody.appendChild(tr);
     });
 }
 
 async function deleteEnquiry(id) {
     if (!confirm('Are you sure you want to permanently delete this enquiry?')) return;
-    
+
     try {
-        const res = await fetch(`${API_BASE}/enquiries/${id}`, { method: 'DELETE' });
-        if (res.ok) {
-            fetchEnquiries();
-        } else {
-            const data = await res.json();
-            alert(data.error);
+        const response = await fetch(`${API_BASE}/enquiries/${id}`, { method: 'DELETE' });
+        if (!response.ok) {
+            const data = await response.json().catch(() => ({}));
+            throw new Error(data.error || 'Failed to delete enquiry');
         }
-    } catch (err) {
-        console.error('Error deleting enquiry:', err);
+
+        fetchEnquiries();
+    } catch (error) {
+        console.error('Error deleting enquiry:', error);
+        alert(error.message || 'Failed to delete enquiry.');
     }
 }
 
 async function toggleEnquiryContacted(id, status) {
     try {
-        const res = await fetch(`${API_BASE}/enquiries/${id}/toggle-contacted`, {
+        const response = await fetch(`${API_BASE}/enquiries/${id}/toggle-contacted`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ contacted: status })
         });
-        
-        if (res.ok) {
-            fetchEnquiries();
-        } else {
-            console.error('Failed to toggle status');
-        }
-    } catch (err) {
-        console.error('Error toggling enquiry:', err);
+
+        if (!response.ok) throw new Error('Failed to toggle status');
+        fetchEnquiries();
+    } catch (error) {
+        console.error('Error toggling enquiry:', error);
     }
+}
+
+function getValue(id) {
+    return document.getElementById(id)?.value || '';
+}
+
+function setValue(id, value) {
+    const el = document.getElementById(id);
+    if (el) el.value = value;
+}
+
+function safeDate(value) {
+    const date = value ? new Date(value) : new Date('');
+    return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function formatDate(date) {
+    return date ? date.toLocaleDateString() : '-';
+}
+
+function formatTime(date) {
+    return date ? date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '-';
+}
+
+function getAgeLabel(dob) {
+    if (!dob) return '';
+
+    const today = new Date();
+    let ageYears = today.getFullYear() - dob.getFullYear();
+    let ageMonths = today.getMonth() - dob.getMonth();
+
+    if (ageMonths < 0 || (ageMonths === 0 && today.getDate() < dob.getDate())) {
+        ageYears--;
+        ageMonths += 12;
+    }
+
+    return `(${ageYears}y ${Math.max(ageMonths, 0)}m)`;
+}
+
+function formatCurrency(value) {
+    const amount = Number(value) || 0;
+    return `Rs. ${amount.toLocaleString('en-IN')}`;
+}
+
+function escapeHtml(value = '') {
+    return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+function escapeAttribute(value = '') {
+    return escapeHtml(value).replace(/`/g, '&#096;');
 }
