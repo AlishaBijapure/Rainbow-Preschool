@@ -124,14 +124,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 if (!response.ok) {
-                    throw new Error('Failed to send inquiry');
+                    const errData = await response.json().catch(() => ({}));
+                    throw new Error(errData.error || 'Failed to send inquiry');
                 }
 
                 alert('Thank you! Your inquiry has been sent successfully. We will get back to you soon.');
                 inquiryForm.reset();
             } catch (error) {
                 console.error(error);
-                alert('Oops! There was a problem sending your inquiry. Please try again or call us directly.');
+                alert(`Oops! There was a problem sending your inquiry: ${error.message}\nPlease try again or call us directly.`);
             } finally {
                 submitBtn.textContent = originalText;
                 submitBtn.disabled = false;
