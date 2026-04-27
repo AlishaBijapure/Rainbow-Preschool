@@ -132,6 +132,18 @@
                     <form id="addStudentForm" class="admin-form">
                         
                         <h4 class="form-section-title">Child Details</h4>
+                        <div class="upload-preview-container">
+                            <div class="preview-img-wrapper" id="sPhotoPreview">
+                                <span class="material-symbols-rounded">add_a_photo</span>
+                            </div>
+                            <div class="preview-info">
+                                <h5>Student Photo</h5>
+                                <p>JPG, PNG or WEBP. Max 2MB recommended.</p>
+                                <label for="sPhoto" class="photo-upload-label">Select Photo</label>
+                                <input type="file" id="sPhoto" class="photo-upload-input" accept="image/*" onchange="previewPhoto(event, 'sPhotoPreview')">
+                            </div>
+                        </div>
+
                         <div class="form-grid-3">
                             <div class="input-group">
                                 <label>First Name*</label>
@@ -336,6 +348,17 @@
                 </div>
             </div>
             
+            <div class="student-photo-container">
+                <div class="student-photo-wrapper" id="pPhotoWrapper">
+                    <img id="pPhotoImg" src="" alt="Student Photo" style="display: none;">
+                    <span id="pPhotoPlaceholder" class="material-symbols-rounded">account_circle</span>
+                </div>
+                <div id="pPhotoUploadActions" style="display: none;">
+                    <label for="pPhotoInput" class="photo-upload-label">Change Photo</label>
+                    <input type="file" id="pPhotoInput" class="photo-upload-input" accept="image/*" onchange="previewPhoto(event, 'pPhotoWrapper', true)">
+                </div>
+            </div>
+
             <form id="profileForm" class="admin-form">
                 <input type="hidden" id="profId">
                 <h4 class="form-section-title">Admission Details</h4>

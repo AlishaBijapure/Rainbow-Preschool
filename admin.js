@@ -114,6 +114,53 @@ function copyAddress() {
     if (tempAddr && permAddr) tempAddr.value = permAddr.value;
 }
 
+let studentPhotoBase64 = null;
+let profilePhotoBase64 = null;
+
+async function previewPhoto(event, targetId, isProfile = false) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    // Limit to 2MB for safety
+    if (file.size > 2 * 1024 * 1024) {
+        alert('Photo is too large. Please select a photo smaller than 2MB.');
+        event.target.value = '';
+        return;
+    }
+
+    try {
+        const base64 = await readAsBase64(file);
+        if (isProfile) {
+            profilePhotoBase64 = base64;
+            const img = document.getElementById('pPhotoImg');
+            const placeholder = document.getElementById('pPhotoPlaceholder');
+            if (img && placeholder) {
+                img.src = base64;
+                img.style.display = 'block';
+                placeholder.style.display = 'none';
+            }
+        } else {
+            studentPhotoBase64 = base64;
+            const container = document.getElementById(targetId);
+            if (container) {
+                container.innerHTML = `<img src="${base64}" style="width: 100%; height: 100%; object-fit: cover;">`;
+            }
+        }
+    } catch (error) {
+        console.error('Error reading photo', error);
+        alert('Failed to read photo.');
+    }
+}
+
+function readAsBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+
 function getActiveYear() {
     return document.getElementById('globalAcademicYear')?.value || '2026-27';
 }
@@ -211,7 +258,8 @@ async function handleAddStudent(event) {
             education: getValue('fEdu')
         },
         permanentAddress: getValue('permAddr'),
-        tempAddress: getValue('tempAddr')
+        tempAddress: getValue('tempAddr'),
+        photo: studentPhotoBase64
     };
 
     try {
@@ -228,6 +276,10 @@ async function handleAddStudent(event) {
 
         alert('Student admitted successfully.');
         event.target.reset();
+        studentPhotoBase64 = null;
+        const preview = document.getElementById('sPhotoPreview');
+        if (preview) preview.innerHTML = '<span class="material-symbols-rounded">add_a_photo</span>';
+        
         toggleCustomAdmission();
         switchTab('dashboard');
     } catch (error) {
@@ -446,6 +498,25 @@ function openProfileModal(student) {
     setValue('pPAddr', student.permanentAddress || '');
     setValue('pTAddr', student.tempAddress || '');
 
+    // Profile Photo
+    const profImg = document.getElementById('pPhotoImg');
+    const profPlaceholder = document.getElementById('pPhotoPlaceholder');
+    profilePhotoBase64 = null; // Reset for this profile
+    
+    if (student.photo) {
+        if (profImg && profPlaceholder) {
+            profImg.src = student.photo;
+            profImg.style.display = 'block';
+            profPlaceholder.style.display = 'none';
+        }
+    } else {
+        if (profImg && profPlaceholder) {
+            profImg.src = '';
+            profImg.style.display = 'none';
+            profPlaceholder.style.display = 'block';
+        }
+    }
+
     renderInstallments(student.fees?.installments || []);
     toggleEditProfile(true);
     document.getElementById('profileModal')?.classList.add('show');
@@ -508,8 +579,11 @@ function toggleEditProfile(forceOff = false) {
 
     const saveContainer = document.getElementById('profSaveContainer');
     const editButton = document.getElementById('btnEditProf');
-    if (saveContainer) saveContainer.hidden = !shouldEdit;
-    if (editButton) editButton.hidden = shouldEdit;
+    if (saveContainer) saveContainer.style.display = shouldEdit ? 'block' : 'none';
+    if (editButton) editButton.style.display = shouldEdit ? 'none' : 'block';
+
+    const photoActions = document.getElementById('pPhotoUploadActions');
+    if (photoActions) photoActions.style.display = shouldEdit ? 'block' : 'none';
 }
 
 async function saveProfileChanges() {
@@ -538,6 +612,10 @@ async function saveProfileChanges() {
         tempAddress: getValue('pTAddr'),
         updateConcession: Number(getValue('pConcession')) || 0
     };
+
+    if (profilePhotoBase64) {
+        payload.photo = profilePhotoBase64;
+    }
 
     if (admissionType === 'Custom') {
         payload.customStartDate = getValue('pCustomStart');

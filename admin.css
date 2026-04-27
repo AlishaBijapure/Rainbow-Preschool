@@ -592,3 +592,107 @@ tbody tr td button {
     }
 }
 
+/* Student Photo Styles */
+.student-photo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.student-photo-wrapper {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid var(--surface);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    background: var(--bg-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+}
+
+.student-photo-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.student-photo-wrapper .material-symbols-rounded {
+    font-size: 64px;
+    color: var(--text-muted);
+}
+
+.photo-upload-input {
+    display: none;
+}
+
+.photo-upload-label {
+    font-size: 0.85rem;
+    color: var(--purple);
+    font-weight: 700;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 6px;
+    background: rgba(157, 113, 232, 0.1);
+    transition: 0.2s;
+}
+
+.photo-upload-label:hover {
+    background: rgba(157, 113, 232, 0.2);
+}
+
+/* Upload Preview for Add Student */
+.upload-preview-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: var(--bg-light);
+    padding: 15px;
+    border-radius: var(--radius-md);
+    margin-bottom: 20px;
+    border: 2px dashed var(--border);
+    transition: 0.3s;
+}
+
+.upload-preview-container:hover {
+    border-color: var(--purple);
+}
+
+.preview-img-wrapper {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+    box-shadow: var(--shadow);
+}
+
+.preview-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.preview-info {
+    flex: 1;
+}
+
+.preview-info h5 {
+    margin-bottom: 4px;
+    color: var(--text-dark);
+}
+
+.preview-info p {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+

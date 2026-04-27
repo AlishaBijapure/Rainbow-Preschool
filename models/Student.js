@@ -44,7 +44,8 @@ const studentSchema = new mongoose.Schema({
         baseFeeAtAdmission: { type: Number, default: 0 },
         concession: { type: Number, default: 0 },
         installments: [installmentSchema]
-    }
+    },
+    photo: { type: String }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Student', studentSchema);
