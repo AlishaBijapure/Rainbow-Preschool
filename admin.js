@@ -327,7 +327,7 @@ function toggleCustomAdmission() {
     const fieldsDiv = document.getElementById('customAdmissionFields');
     if (!fieldsDiv) return;
 
-    fieldsDiv.hidden = !isCustom;
+    fieldsDiv.style.display = isCustom ? 'grid' : 'none';
 
     ['sCustomStart', 'sCustomEnd', 'sCustomFee'].forEach(id => {
         const input = document.getElementById(id);
@@ -452,7 +452,7 @@ function renderInstallments(installments) {
 function toggleProfileCustomFields() {
     const isCustom = getValue('pAdmissionType') === 'Custom';
     document.querySelectorAll('.pCustomGroup').forEach(group => {
-        group.hidden = !isCustom;
+        group.style.display = isCustom ? 'block' : 'none';
         const input = group.querySelector('input');
         if (input) input.required = isCustom;
     });
