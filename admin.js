@@ -297,10 +297,6 @@ function applyFilters() {
             <td><strong>${escapeHtml(student.firstName)} ${escapeHtml(student.lastName)}</strong></td>
             <td>${escapeHtml(student.classAdmitted)}</td>
             <td>${formatDate(dob)} <span class="small-note">${age}</span></td>
-            <td>
-                ${formatCurrency(baseFee)}
-                ${concession > 0 ? `<span class="small-note">-${formatCurrency(concession)} concession</span>` : ''}
-            </td>
             <td><span class="amount-positive">${formatCurrency(totalPaid)}</span></td>
             <td><span class="${balance > 0 ? 'amount-negative' : 'amount-positive'}">${formatCurrency(balance)}</span></td>
             <td>
@@ -318,7 +314,7 @@ function applyFilters() {
     });
 
     if (renderedCount === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" class="empty-row">No students match the selected filters.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" class="empty-row">No students match the selected filters.</td></tr>';
     }
 }
 
