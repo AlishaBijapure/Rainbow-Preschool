@@ -457,3 +457,13 @@ tbody tr td button {
     color: var(--text-muted);
     font-style: italic;
 }
+
+.amount-positive {
+    color: #10B981;
+    font-weight: 700;
+}
+
+.amount-negative {
+    color: #EF4444;
+    font-weight: 700;
+}
