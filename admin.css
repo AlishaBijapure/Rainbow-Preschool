@@ -535,9 +535,36 @@ tbody tr td button {
 }
 
 @media (max-width: 768px) {
+    /* Prevent table from pushing viewport */
+    .main-content {
+        max-width: 100vw;
+        overflow-x: hidden;
+    }
+    .card {
+        padding: 15px;
+        overflow: hidden; /* Force table-responsive to kick in */
+    }
+
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .card-header h3 {
+        margin-bottom: 0;
+    }
+
     /* Stack form grids on mobile */
     .form-grid-3, .form-grid-2 {
         grid-template-columns: 1fr;
+    }
+
+    /* Keep table headers properly spaced */
+    th, td {
+        white-space: nowrap;
+        font-size: 0.85rem;
+        padding: 10px;
     }
 
     /* Specific adjustments for profile modal */
