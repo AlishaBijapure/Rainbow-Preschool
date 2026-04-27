@@ -255,6 +255,27 @@ function applyFilters() {
     const customFilter = document.getElementById('filterCustom')?.checked;
     const searchFilter = getValue('searchName').toLowerCase().trim();
 
+    const badge = document.getElementById('classFilterBaseFee');
+    if (badge) {
+        if (classFilter !== 'All') {
+            const fieldMap = {
+                Playgroup: 'feePlaygroup',
+                Nursery: 'feeNursery',
+                LKG: 'feeLKG',
+                UKG: 'feeUKG'
+            };
+            const feeVal = document.getElementById(fieldMap[classFilter])?.value;
+            if (feeVal) {
+                badge.textContent = `Base Fee: ${formatCurrency(feeVal)}`;
+                badge.style.display = 'inline-block';
+            } else {
+                badge.style.display = 'none';
+            }
+        } else {
+            badge.style.display = 'none';
+        }
+    }
+
     let filtered = currentStudents;
 
     if (searchFilter) {

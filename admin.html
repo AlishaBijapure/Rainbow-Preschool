@@ -81,13 +81,16 @@
                         </div>
                         <div class="input-group" style="margin-bottom: 0;">
                             <label>Filter by Class</label>
-                            <select id="filterClass" onchange="applyFilters()">
-                                <option value="All">All Classes</option>
-                                <option value="Playgroup">Playgroup</option>
-                                <option value="Nursery">Nursery</option>
-                                <option value="LKG">LKG</option>
-                                <option value="UKG">UKG</option>
-                            </select>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <select id="filterClass" onchange="applyFilters()">
+                                    <option value="All">All Classes</option>
+                                    <option value="Playgroup">Playgroup</option>
+                                    <option value="Nursery">Nursery</option>
+                                    <option value="LKG">LKG</option>
+                                    <option value="UKG">UKG</option>
+                                </select>
+                                <span id="classFilterBaseFee" style="display: none; white-space: nowrap; font-size: 13px; padding: 6px 12px; border-radius: 6px; background: rgba(157, 113, 232, 0.15); color: var(--purple); font-weight: 700;"></span>
+                            </div>
                         </div>
                         <div class="input-group" style="margin-bottom: 0; display: flex; align-items: center; gap: 10px;">
                             <input type="checkbox" id="filterPending" onchange="applyFilters()" style="width: 20px; height: 20px;">
