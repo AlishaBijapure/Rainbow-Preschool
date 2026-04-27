@@ -98,4 +98,44 @@ document.addEventListener('DOMContentLoaded', () => {
             
         }, 5000); // Change every 5 seconds
     }
+
+    // Inquiry Form Submission Logic
+    const inquiryForm = document.getElementById('inquiry-form');
+    if (inquiryForm) {
+        inquiryForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const submitBtn = inquiryForm.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Sending...';
+            submitBtn.disabled = true;
+
+            const payload = {
+                parentName: document.getElementById('parentName').value.trim(),
+                childAge: Number(document.getElementById('childAge').value),
+                phone: document.getElementById('phone').value.trim()
+            };
+
+            try {
+                const response = await fetch('/api/enquiries', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to send inquiry');
+                }
+
+                alert('Thank you! Your inquiry has been sent successfully. We will get back to you soon.');
+                inquiryForm.reset();
+            } catch (error) {
+                console.error(error);
+                alert('Oops! There was a problem sending your inquiry. Please try again or call us directly.');
+            } finally {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+    }
 });
