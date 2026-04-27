@@ -5,6 +5,7 @@ const installmentSchema = new mongoose.Schema({
     date: { type: Date, required: true, default: Date.now },
     payerName: { type: String, required: true },
     receiverName: { type: String, required: true },
+    receiptNumber: { type: String, required: true },
     paymentMode: { type: String, enum: ['Cash', 'Online'], default: 'Cash', required: true }
 });
 

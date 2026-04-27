@@ -354,6 +354,7 @@ async function handleFeeCollection(event) {
         date: getValue('fcDate'),
         payerName: getValue('fcPayer'),
         receiverName: getValue('fcReceiver'),
+        receiptNumber: getValue('fcReceiptNo'),
         paymentMode: getValue('fcPaymentMode') || 'Cash'
     };
 
@@ -424,7 +425,7 @@ function renderInstallments(installments) {
     if (!tbody) return;
 
     if (!installments.length) {
-        tbody.innerHTML = '<tr><td colspan="5" class="empty-row">No payments recorded.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" class="empty-row">No payments recorded.</td></tr>';
         return;
     }
 
@@ -438,6 +439,7 @@ function renderInstallments(installments) {
             <td><span class="amount-positive">${formatCurrency(inst.amountPaid)}</span></td>
             <td>${escapeHtml(inst.payerName)}</td>
             <td>${escapeHtml(inst.receiverName)}</td>
+            <td><strong>${escapeHtml(inst.receiptNumber || '-')}</strong></td>
             <td><span class="badge ${mode === 'Online' ? 'bg-primary' : 'bg-secondary'}">${escapeHtml(mode)}</span></td>
         `;
 

@@ -169,7 +169,7 @@ app.delete('/api/students/:id', async (req, res) => {
 // Add Fee Installment
 app.post('/api/students/:id/fees', async (req, res) => {
     try {
-        const { amountPaid, payerName, receiverName, date, paymentMode } = req.body;
+        const { amountPaid, payerName, receiverName, receiptNumber, date, paymentMode } = req.body;
         const student = await Student.findById(req.params.id);
         
         if (!student) return res.status(404).json({ error: 'Student not found' });
@@ -178,6 +178,7 @@ app.post('/api/students/:id/fees', async (req, res) => {
             amountPaid,
             payerName,
             receiverName,
+            receiptNumber,
             paymentMode: paymentMode || 'Cash',
             date: date || new Date()
         });
