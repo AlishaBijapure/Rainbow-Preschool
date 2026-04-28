@@ -334,13 +334,13 @@ app.post('/api/uniforms', async (req, res) => {
 
 app.delete('/api/uniforms', async (req, res) => {
     try {
-        const { category, itemType } = req.body;
-        if (!category || !itemType) {
+        const { category, itemType, size } = req.body;
+        if (!category || !itemType || !size) {
             return res.status(400).json({ error: 'Missing required fields' });
         }
         
-        await Uniform.deleteMany({ category, itemType });
-        res.json({ success: true, message: 'Item type deleted successfully' });
+        await Uniform.deleteOne({ category, itemType, size });
+        res.json({ success: true, message: 'Size deleted successfully' });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

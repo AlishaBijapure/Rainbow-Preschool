@@ -897,6 +897,12 @@ function renderUniforms() {
                                     <button class="btn btn-sm btn-outline" style="padding: 2px 8px; font-weight: 700;" onclick="adjustStock('${escapeAttribute(item.category)}', '${escapeAttribute(item.itemType)}', '${escapeAttribute(item.size)}', 1, this)">+</button>
                                 </div>
                             </td>
+                            <td style="padding: 10px; text-align: right;">
+                                <button class="btn-delete" style="background: none; border: none; color: var(--danger); cursor: pointer; display: inline-flex; align-items: center; padding: 5px; border-radius: 50%; transition: background 0.2s;" 
+                                    onclick="deleteUniformSize('${escapeAttribute(item.category)}', '${escapeAttribute(item.itemType)}', '${escapeAttribute(item.size)}')">
+                                    <span class="material-symbols-rounded" style="font-size: 18px;">delete</span>
+                                </button>
+                            </td>
                         </tr>
                     `;
                 });
@@ -907,13 +913,7 @@ function renderUniforms() {
                             <span class="material-symbols-rounded" style="color: var(--purple);">${icon}</span>
                             <span>${escapeHtml(itemType)}</span>
                         </div>
-                        <div style="display: flex; align-items: center; gap: 15px;">
-                            <button class="btn-delete" style="background: none; border: none; color: var(--danger); cursor: pointer; display: flex; align-items: center; padding: 5px; border-radius: 50%; transition: background 0.2s;" 
-                                onclick="event.stopPropagation(); deleteItemType('${escapeAttribute(category)}', '${escapeAttribute(itemType)}')">
-                                <span class="material-symbols-rounded" style="font-size: 20px;">delete</span>
-                            </button>
-                            <span class="material-symbols-rounded expand-icon" style="transition: transform 0.3s;">expand_more</span>
-                        </div>
+                        <span class="material-symbols-rounded expand-icon" style="transition: transform 0.3s;">expand_more</span>
                     </summary>
                     <div class="accordion-content" style="padding: 15px; border-top: 1px solid var(--border);">
                         <table style="width: 100%; border-collapse: collapse;">
@@ -943,8 +943,8 @@ function renderUniforms() {
     }
 }
 
-async function deleteItemType(category, itemType) {
-    if (!confirm(`Are you sure you want to delete all sizes for ${itemType} in ${category}?`)) {
+async function deleteUniformSize(category, itemType, size) {
+    if (!confirm(`Are you sure you want to delete size ${size} for ${itemType} in ${category}?`)) {
         return;
     }
 
@@ -952,16 +952,16 @@ async function deleteItemType(category, itemType) {
         const response = await fetch(`${API_BASE}/uniforms`, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ category, itemType })
+            body: JSON.stringify({ category, itemType, size })
         });
 
-        if (!response.ok) throw new Error('Failed to delete item type');
+        if (!response.ok) throw new Error('Failed to delete size');
 
-        alert('Item type deleted successfully.');
+        alert('Size deleted successfully.');
         loadUniforms();
     } catch (error) {
         console.error(error);
-        alert('Failed to delete item type.');
+        alert('Failed to delete size.');
     }
 }
 
