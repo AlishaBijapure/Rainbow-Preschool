@@ -48,6 +48,7 @@ function initNavigation() {
 function initForms() {
     document.getElementById('addStudentForm')?.addEventListener('submit', handleAddStudent);
     document.getElementById('feeCollectionForm')?.addEventListener('submit', handleFeeCollection);
+    document.getElementById('addSizeForm')?.addEventListener('submit', handleAddSize);
 }
 
 function initModals() {
@@ -83,6 +84,7 @@ function switchTab(tabId) {
     if (tabId === 'dashboard') loadStudents();
     if (tabId === 'fee-settings') loadFeeSettings();
     if (tabId === 'enquiries') fetchEnquiries();
+    if (tabId === 'uniform') loadUniforms();
 }
 
 function calculateAge() {
@@ -796,6 +798,137 @@ function getAgeLabel(dob) {
     }
 
     return `(${ageYears}y ${Math.max(ageMonths, 0)}m)`;
+}
+
+let currentUniforms = [];
+
+async function loadUniforms() {
+    try {
+        const response = await fetch(`${API_BASE}/uniforms`);
+        currentUniforms = await response.json();
+        if (!Array.isArray(currentUniforms)) currentUniforms = [];
+        renderUniforms();
+    } catch (error) {
+        currentUniforms = [];
+        renderUniforms();
+        console.error('Error loading uniforms', error);
+    }
+}
+
+function renderUniforms() {
+    const categories = {
+        'Girls Uniform': document.getElementById('girlsUniformTableBody'),
+        'Boys Uniform': document.getElementById('boysUniformTableBody'),
+        'Sports Uniform': document.getElementById('sportsUniformTableBody')
+    };
+
+    for (const key in categories) {
+        if (categories[key]) categories[key].innerHTML = '';
+    }
+
+    const grouped = {
+        'Girls Uniform': [],
+        'Boys Uniform': [],
+        'Sports Uniform': []
+    };
+
+    currentUniforms.forEach(item => {
+        if (grouped[item.category]) {
+            grouped[item.category].push(item);
+        }
+    });
+
+    for (const category in grouped) {
+        const tbody = categories[category];
+        if (!tbody) continue;
+
+        grouped[category].sort((a, b) => {
+            if (a.itemType !== b.itemType) {
+                return a.itemType.localeCompare(b.itemType);
+            }
+            return parseFloat(a.size) - parseFloat(b.size) || a.size.localeCompare(b.size);
+        });
+
+        if (grouped[category].length === 0) {
+            tbody.innerHTML = '<tr><td colspan="3" class="empty-row">No items found.</td></tr>';
+            continue;
+        }
+
+        grouped[category].forEach(item => {
+            const tr = document.createElement('tr');
+            tr.style.cursor = 'default'; 
+            
+            tr.innerHTML = `
+                <td><strong>${escapeHtml(item.itemType)}</strong></td>
+                <td><span class="badge bg-secondary" style="background: rgba(157, 113, 232, 0.1); color: var(--purple); padding: 4px 8px; border-radius: 4px; font-weight: 600;">${escapeHtml(item.size)}</span></td>
+                <td>
+                    <input type="number" value="${item.count}" min="0" 
+                        style="width: 80px; padding: 6px; border-radius: 6px; border: 1px solid var(--border); font-family: var(--font-body); font-weight: 600;"
+                        onchange="updateStockCount('${escapeAttribute(item.category)}', '${escapeAttribute(item.itemType)}', '${escapeAttribute(item.size)}', this.value)">
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+}
+
+async function updateStockCount(category, itemType, size, newCount) {
+    try {
+        const response = await fetch(`${API_BASE}/uniforms`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                category,
+                itemType,
+                size,
+                count: Number(newCount)
+            })
+        });
+
+        if (!response.ok) throw new Error('Failed to update stock count');
+    } catch (error) {
+        console.error(error);
+        alert('Failed to update stock count.');
+        loadUniforms();
+    }
+}
+
+function openAddSizeModal() {
+    document.getElementById('addSizeModal')?.classList.add('show');
+}
+
+async function handleAddSize(event) {
+    event.preventDefault();
+
+    const payload = {
+        category: getValue('uniformCategory'),
+        itemType: getValue('uniformItemType'),
+        size: getValue('uniformSize').trim(),
+        count: Number(getValue('uniformCount')) || 0
+    };
+
+    if (!payload.size) {
+        alert('Size is required.');
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE}/uniforms`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) throw new Error('Failed to add size');
+
+        alert('Size added successfully.');
+        closeModal('addSizeModal');
+        document.getElementById('addSizeForm')?.reset();
+        loadUniforms();
+    } catch (error) {
+        console.error(error);
+        alert('Failed to add size.');
+    }
 }
 
 function formatCurrency(value) {

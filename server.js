@@ -9,6 +9,38 @@ const Student = require('./models/Student');
 const FeeStructure = require('./models/FeeStructure');
 const Enquiry = require('./models/Enquiry');
 
+const Uniform = require('./models/Uniform');
+
+async function seedUniforms() {
+    try {
+        const count = await Uniform.countDocuments();
+        if (count === 0) {
+            const initialData = [
+                { category: 'Girls Uniform', itemType: 'Skirt', sizes: ['18', '20', '22', '24', '26'] },
+                { category: 'Girls Uniform', itemType: 'Shirt', sizes: ['20', '22', '24'] },
+                { category: 'Boys Uniform', itemType: 'Shirt', sizes: ['18', '20', '22', '24', '26'] },
+                { category: 'Boys Uniform', itemType: 'Pant', sizes: ['11', '12', '13', '16', '18'] },
+                { category: 'Sports Uniform', itemType: 'T-shirt', sizes: ['18', '20', '22', '24'] },
+                { category: 'Sports Uniform', itemType: 'Pant', sizes: ['20', '22'] }
+            ];
+
+            for (const group of initialData) {
+                for (const size of group.sizes) {
+                    await Uniform.create({
+                        category: group.category,
+                        itemType: group.itemType,
+                        size: size,
+                        count: 0
+                    });
+                }
+            }
+            console.log('Initial uniform data seeded.');
+        }
+    } catch (err) {
+        console.error('Error seeding uniforms:', err);
+    }
+}
+
 const app = express();
 app.use(compression());
 app.use(cors());
@@ -34,7 +66,10 @@ mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 })
-.then(() => console.log('Connected to MongoDB Cloud'))
+.then(() => {
+    console.log('Connected to MongoDB Cloud');
+    seedUniforms();
+})
 .catch(err => console.error('MongoDB connection error:', err));
 
 // --- API Endpoints ---
@@ -263,6 +298,35 @@ app.delete('/api/enquiries/:id', async (req, res) => {
     try {
         await Enquiry.findByIdAndDelete(req.params.id);
         res.json({ message: 'Enquiry deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// --- Uniform Inventory API ---
+
+app.get('/api/uniforms', async (req, res) => {
+    try {
+        const uniforms = await Uniform.find();
+        res.json(uniforms);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.post('/api/uniforms', async (req, res) => {
+    try {
+        const { category, itemType, size, count } = req.body;
+        if (!category || !itemType || !size) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+        
+        const uniform = await Uniform.findOneAndUpdate(
+            { category, itemType, size },
+            { category, itemType, size, count: Number(count) || 0 },
+            { upsert: true, new: true }
+        );
+        res.json(uniform);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

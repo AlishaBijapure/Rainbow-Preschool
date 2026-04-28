@@ -34,6 +34,9 @@
                 <button class="nav-btn" data-tab="enquiries">
                     <span class="material-symbols-rounded">inbox</span> Enquiries
                 </button>
+                <button class="nav-btn" data-tab="uniform">
+                    <span class="material-symbols-rounded">checkroom</span> Uniform
+                </button>
             </nav>
             <div class="sidebar-footer">
                 <a href="/" class="btn-return">
@@ -288,7 +291,119 @@
                     </div>
                 </div>
             </section>
+
+            <!-- Uniform Section -->
+            <section id="uniform" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Uniform Inventory</h3>
+                        <button class="btn btn-sm btn-primary" onclick="openAddSizeModal()">Add New Size</button>
+                    </div>
+                    
+                    <div class="uniform-grids" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                        <!-- Girls Uniform -->
+                        <div class="inventory-card" style="background: var(--bg-light); padding: 20px; border-radius: var(--radius-md);">
+                            <h4 style="color: var(--purple); margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                                <span class="material-symbols-rounded">female</span> Girls Uniform
+                            </h4>
+                            <div class="table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Item</th>
+                                            <th>Size</th>
+                                            <th>Stock Count</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="girlsUniformTableBody">
+                                        <!-- Loaded dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Boys Uniform -->
+                        <div class="inventory-card" style="background: var(--bg-light); padding: 20px; border-radius: var(--radius-md);">
+                            <h4 style="color: var(--secondary); margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                                <span class="material-symbols-rounded">male</span> Boys Uniform
+                            </h4>
+                            <div class="table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Item</th>
+                                            <th>Size</th>
+                                            <th>Stock Count</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="boysUniformTableBody">
+                                        <!-- Loaded dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Sports Uniform -->
+                        <div class="inventory-card" style="background: var(--bg-light); padding: 20px; border-radius: var(--radius-md);">
+                            <h4 style="color: var(--primary); margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                                <span class="material-symbols-rounded">sports_tennis</span> Sports Uniform
+                            </h4>
+                            <div class="table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Item</th>
+                                            <th>Size</th>
+                                            <th>Stock Count</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="sportsUniformTableBody">
+                                        <!-- Loaded dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
         </main>
+    </div>
+
+    <!-- Modal for Adding New Size -->
+    <div id="addSizeModal" class="modal">
+        <div class="modal-content card">
+            <span class="close-modal" onclick="closeModal('addSizeModal')">&times;</span>
+            <h3>Add New Uniform Size</h3>
+            <form id="addSizeForm" class="admin-form">
+                <div class="input-group">
+                    <label>Category*</label>
+                    <select id="uniformCategory" required>
+                        <option value="Girls Uniform">Girls Uniform</option>
+                        <option value="Boys Uniform">Boys Uniform</option>
+                        <option value="Sports Uniform">Sports Uniform</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Item Type*</label>
+                    <select id="uniformItemType" required>
+                        <option value="Shirt">Shirt</option>
+                        <option value="Skirt">Skirt</option>
+                        <option value="Pant">Pant</option>
+                        <option value="T-shirt">T-shirt</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Size*</label>
+                    <input type="text" id="uniformSize" required placeholder="e.g. 28">
+                </div>
+                <div class="input-group">
+                    <label>Initial Stock Count</label>
+                    <input type="number" id="uniformCount" value="0" min="0">
+                </div>
+                <div class="form-actions mt-3">
+                    <button type="submit" class="btn btn-primary block-btn">Add Size</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <!-- Modal for Collecting Fee -->
