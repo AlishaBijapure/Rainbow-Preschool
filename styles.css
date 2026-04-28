@@ -579,7 +579,7 @@ section {
     position: relative;
     z-index: 2;
     /* Soft white overlay to ensure dark text remains perfectly readable */
-    background: linear-gradient(rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.087)), url('assets/images/3d-cartoon-back-school.jpg');
+    background: linear-gradient(rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.087)), url('assets/images/3d-cartoon-back-school-compressed.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -615,7 +615,7 @@ section {
 .academics-section {
     position: relative;
     z-index: 2;
-    background: linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), url('assets/images/view-3d-toy-like-train-model.jpg') !important;
+    background: linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), url('assets/images/view-3d-toy-like-train-model-compressed.jpg') !important;
     background-size: cover !important;
     background-position: center !important;
     background-attachment: fixed !important;
@@ -1087,6 +1087,16 @@ section {
     }
 }
 
+@media (max-width: 1024px) {
+    .hero,
+    .usp-section,
+    .about-section,
+    .academics-section,
+    .instagram-section {
+        background-attachment: scroll !important;
+    }
+}
+
 @media (max-width: 768px) {
     .mobile-menu-toggle {
         display: block;
@@ -1095,33 +1105,91 @@ section {
     #nav-links {
         display: none;
         position: absolute;
-        top: 100%;
+        top: calc(100% + 15px);
         left: 0;
         width: 100%;
-        background: white;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
         flex-direction: column;
-        padding: 20px 0;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        padding: 25px 20px;
+        box-shadow: var(--shadow-hover);
+        border-radius: var(--radius-md);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        gap: 20px;
     }
 
     #nav-links.active {
         display: flex;
     }
 
-    .hero {
-        padding-top: 100px;
+    #nav-links a {
+        width: 100%;
+        text-align: center;
+        padding: 10px 0;
+        font-size: 1.2rem;
     }
 
-    .hero-content h1 {
-        font-size: 2.8rem;
+    #nav-links a.nav-cta {
+        width: 80%;
+        margin: 10px auto 0;
+    }
+
+    .hero {
+        padding-top: 140px;
+        padding-bottom: 60px;
+    }
+
+    .hero-wrapper {
+        padding: 40px 20px;
+        margin: 0 15px;
+    }
+
+    .rainbow-word {
+        font-size: clamp(3rem, 12vw, 4.5rem);
+    }
+
+    .preschool-word {
+        font-size: clamp(2.2rem, 10vw, 3.2rem);
+    }
+
+    .hero-wrapper p {
+        font-size: 1.1rem;
+        margin-bottom: 30px;
     }
 
     .hero-buttons {
         flex-direction: column;
+        gap: 15px;
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
+    }
+
+    .hero-buttons .btn {
+        width: 100%;
     }
 
     .resources {
         flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero {
+        padding-top: 120px;
+    }
+    .rainbow-word {
+        font-size: 2.5rem;
+    }
+    .preschool-word {
+        font-size: 2rem;
+    }
+    .section-title {
+        font-size: 2rem;
+    }
+    .card {
+        padding: 20px;
     }
 }
 

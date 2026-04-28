@@ -3,18 +3,31 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
+const compression = require('compression');
 
 const Student = require('./models/Student');
 const FeeStructure = require('./models/FeeStructure');
 const Enquiry = require('./models/Enquiry');
 
 const app = express();
+app.use(compression());
 app.use(cors());
 app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ limit: '5mb', extended: true }));
 
 // Serve static files from the root directory
-app.use(express.static(path.join(__dirname, '/')));
+app.use(express.static(path.join(__dirname, '/'), {
+    maxAge: '1d',
+    setHeaders: (res, filePath) => {
+        if (filePath.endsWith('.html')) {
+            res.setHeader('Cache-Control', 'no-cache');
+        } else if (filePath.match(/\.(jpg|jpeg|png|gif|webp|pdf|woff|woff2)$/)) {
+            res.setHeader('Cache-Control', 'public, max-age=31536000'); // 1 year for media
+        } else if (filePath.match(/\.(css|js)$/)) {
+            res.setHeader('Cache-Control', 'public, max-age=86400'); // 1 day for styles and scripts
+        }
+    }
+}));
 
 // Database Connection
 mongoose.connect(process.env.MONGO_URI, {
