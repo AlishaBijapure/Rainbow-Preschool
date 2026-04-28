@@ -701,37 +701,56 @@ tbody tr td button {
     pointer-events: none;
 }
 
+.admin-form.is-viewing .form-grid-3,
+.admin-form.is-viewing .form-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
 .admin-form.is-viewing .input-group {
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 8px;
-    margin-bottom: 15px;
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    transition: transform 0.2s ease;
+}
+
+.admin-form.is-viewing .input-group:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.04);
 }
 
 .admin-form.is-viewing label {
+    display: block;
     color: var(--text-muted);
-    font-weight: 700;
-    font-size: 0.75rem;
-    margin-bottom: 6px;
+    font-weight: 600;
+    font-size: 0.7rem;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.8px;
+    margin-bottom: 6px;
 }
 
 .admin-form.is-viewing input,
 .admin-form.is-viewing select,
 .admin-form.is-viewing textarea {
+    display: block;
+    width: 100%;
     border: none !important;
     background: transparent !important;
     padding: 0 !important;
     font-weight: 700;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     color: var(--purple);
-    pointer-events: none !important;
     box-shadow: none !important;
     outline: none !important;
     min-height: auto !important;
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
+    pointer-events: none !important;
 }
 
 /* Exclude modal layout buttons */
