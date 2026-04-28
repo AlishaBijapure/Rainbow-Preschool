@@ -731,6 +731,11 @@ function renderEnquiries() {
         filteredEnquiries = currentEnquiries.filter(enquiry => !enquiry.contacted);
     }
 
+    const countBadge = document.getElementById('enquiriesCountBadge');
+    if (countBadge) {
+        countBadge.textContent = filteredEnquiries.length;
+    }
+
     if (!filteredEnquiries.length) {
         tbody.innerHTML = `<tr><td colspan="5" class="empty-row">${showPendingOnly ? 'No pending enquiries found.' : 'No enquiries received yet.'}</td></tr>`;
         return;
