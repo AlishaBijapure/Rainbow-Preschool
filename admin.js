@@ -49,6 +49,16 @@ function initForms() {
     document.getElementById('addStudentForm')?.addEventListener('submit', handleAddStudent);
     document.getElementById('feeCollectionForm')?.addEventListener('submit', handleFeeCollection);
     document.getElementById('addSizeForm')?.addEventListener('submit', handleAddSize);
+
+    ['permAddr', 'tempAddr', 'pPAddr', 'pTAddr'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = (this.scrollHeight + 5) + 'px';
+            });
+        }
+    });
 }
 
 function initModals() {
@@ -500,6 +510,16 @@ function openProfileModal(student) {
     setValue('pPAddr', student.permanentAddress || '');
     setValue('pTAddr', student.tempAddress || '');
 
+    setTimeout(() => {
+        ['pPAddr', 'pTAddr'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.style.height = 'auto';
+                el.style.height = (el.scrollHeight + 5) + 'px';
+            }
+        });
+    }, 50);
+
     // Profile Photo
     const profImg = document.getElementById('pPhotoImg');
     const profPlaceholder = document.getElementById('pPhotoPlaceholder');
@@ -595,6 +615,16 @@ function toggleEditProfile(forceOff = false) {
             form.classList.add('is-viewing');
         }
     }
+
+    setTimeout(() => {
+        ['pPAddr', 'pTAddr'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.style.height = 'auto';
+                el.style.height = (el.scrollHeight + 5) + 'px';
+            }
+        });
+    }, 50);
 }
 
 async function saveProfileChanges() {
