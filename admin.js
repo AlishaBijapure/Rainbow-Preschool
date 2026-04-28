@@ -84,7 +84,7 @@ function switchTab(tabId) {
     if (tabId === 'dashboard') loadStudents();
     if (tabId === 'fee-settings') loadFeeSettings();
     if (tabId === 'enquiries') fetchEnquiries();
-    if (tabId === 'uniform') loadUniforms();
+    if (tabId === 'uniform' || tabId === 'add-student') loadUniforms();
 }
 
 function calculateAge() {
@@ -817,13 +817,15 @@ async function loadUniforms() {
 
 function renderUniforms() {
     const categories = {
-        'Girls Uniform': document.getElementById('girlsUniformTableBody'),
-        'Boys Uniform': document.getElementById('boysUniformTableBody'),
-        'Sports Uniform': document.getElementById('sportsUniformTableBody')
+        'Girls Uniform': [document.getElementById('girlsUniformTableBody'), document.getElementById('girlsUniformTableBodyAdmission')],
+        'Boys Uniform': [document.getElementById('boysUniformTableBody'), document.getElementById('boysUniformTableBodyAdmission')],
+        'Sports Uniform': [document.getElementById('sportsUniformTableBody'), document.getElementById('sportsUniformTableBodyAdmission')]
     };
 
     for (const key in categories) {
-        if (categories[key]) categories[key].innerHTML = '';
+        categories[key].forEach(tbody => {
+            if (tbody) tbody.innerHTML = '';
+        });
     }
 
     const grouped = {
@@ -839,9 +841,8 @@ function renderUniforms() {
     });
 
     for (const category in grouped) {
-        const tbody = categories[category];
-        if (!tbody) continue;
-
+        const tbodies = categories[category];
+        
         grouped[category].sort((a, b) => {
             if (a.itemType !== b.itemType) {
                 return a.itemType.localeCompare(b.itemType);
@@ -849,25 +850,29 @@ function renderUniforms() {
             return parseFloat(a.size) - parseFloat(b.size) || a.size.localeCompare(b.size);
         });
 
-        if (grouped[category].length === 0) {
-            tbody.innerHTML = '<tr><td colspan="3" class="empty-row">No items found.</td></tr>';
-            continue;
-        }
+        tbodies.forEach(tbody => {
+            if (!tbody) return;
 
-        grouped[category].forEach(item => {
-            const tr = document.createElement('tr');
-            tr.style.cursor = 'default'; 
-            
-            tr.innerHTML = `
-                <td><strong>${escapeHtml(item.itemType)}</strong></td>
-                <td><span class="badge bg-secondary" style="background: rgba(157, 113, 232, 0.1); color: var(--purple); padding: 4px 8px; border-radius: 4px; font-weight: 600;">${escapeHtml(item.size)}</span></td>
-                <td>
-                    <input type="number" value="${item.count}" min="0" 
-                        style="width: 80px; padding: 6px; border-radius: 6px; border: 1px solid var(--border); font-family: var(--font-body); font-weight: 600;"
-                        onchange="updateStockCount('${escapeAttribute(item.category)}', '${escapeAttribute(item.itemType)}', '${escapeAttribute(item.size)}', this.value)">
-                </td>
-            `;
-            tbody.appendChild(tr);
+            if (grouped[category].length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" class="empty-row">No items found.</td></tr>';
+                return;
+            }
+
+            grouped[category].forEach(item => {
+                const tr = document.createElement('tr');
+                tr.style.cursor = 'default'; 
+                
+                tr.innerHTML = `
+                    <td><strong>${escapeHtml(item.itemType)}</strong></td>
+                    <td><span class="badge bg-secondary" style="background: rgba(157, 113, 232, 0.1); color: var(--purple); padding: 4px 8px; border-radius: 4px; font-weight: 600;">${escapeHtml(item.size)}</span></td>
+                    <td>
+                        <input type="number" value="${item.count}" min="0" 
+                            style="width: 80px; padding: 6px; border-radius: 6px; border: 1px solid var(--border); font-family: var(--font-body); font-weight: 600;"
+                            onchange="updateStockCount('${escapeAttribute(item.category)}', '${escapeAttribute(item.itemType)}', '${escapeAttribute(item.size)}', this.value)">
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
         });
     }
 }

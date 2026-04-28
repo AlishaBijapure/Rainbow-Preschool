@@ -236,6 +236,79 @@
                         </div>
                     </form>
                 </div>
+
+                <!-- Uniform Inventory Section inside Add Student -->
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h3>Uniform Inventory</h3>
+                        <button class="btn btn-sm btn-primary" onclick="openAddSizeModal()">Add New Size</button>
+                    </div>
+                    
+                    <div class="uniform-grids" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                        <!-- Girls Uniform -->
+                        <div class="inventory-card" style="background: var(--bg-light); padding: 20px; border-radius: var(--radius-md);">
+                            <h4 style="color: var(--purple); margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                                <span class="material-symbols-rounded">female</span> Girls Uniform
+                            </h4>
+                            <div class="table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Item</th>
+                                            <th>Size</th>
+                                            <th>Stock Count</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="girlsUniformTableBodyAdmission">
+                                        <!-- Loaded dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Boys Uniform -->
+                        <div class="inventory-card" style="background: var(--bg-light); padding: 20px; border-radius: var(--radius-md);">
+                            <h4 style="color: var(--secondary); margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                                <span class="material-symbols-rounded">male</span> Boys Uniform
+                            </h4>
+                            <div class="table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Item</th>
+                                            <th>Size</th>
+                                            <th>Stock Count</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="boysUniformTableBodyAdmission">
+                                        <!-- Loaded dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Sports Uniform -->
+                        <div class="inventory-card" style="background: var(--bg-light); padding: 20px; border-radius: var(--radius-md);">
+                            <h4 style="color: var(--primary); margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                                <span class="material-symbols-rounded">sports_tennis</span> Sports Uniform
+                            </h4>
+                            <div class="table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Item</th>
+                                            <th>Size</th>
+                                            <th>Stock Count</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="sportsUniformTableBodyAdmission">
+                                        <!-- Loaded dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </section>
 
             <!-- TAB 3: Fee Settings -->
