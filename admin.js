@@ -871,8 +871,7 @@ function renderUniforms() {
 
                 let icon = 'checkroom';
                 if (itemType.toLowerCase().includes('skirt')) icon = 'apparel';
-                if (itemType.toLowerCase().includes('pant')) icon = 'straighten';
-                if (itemType.toLowerCase().includes('t-shirt')) icon = 'apparel';
+                if (itemType.toLowerCase().includes('pant')) icon = 'shorts';
                 if (itemType.toLowerCase().includes('shirt')) icon = 'checkroom';
 
                 const details = document.createElement('details');
