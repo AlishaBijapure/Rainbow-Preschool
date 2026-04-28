@@ -584,6 +584,15 @@ function toggleEditProfile(forceOff = false) {
 
     const photoActions = document.getElementById('pPhotoUploadActions');
     if (photoActions) photoActions.style.display = shouldEdit ? 'block' : 'none';
+
+    const form = document.getElementById('profileForm');
+    if (form) {
+        if (shouldEdit) {
+            form.classList.remove('is-viewing');
+        } else {
+            form.classList.add('is-viewing');
+        }
+    }
 }
 
 async function saveProfileChanges() {
