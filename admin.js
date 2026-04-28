@@ -878,16 +878,21 @@ function renderUniforms() {
 
                 let rowsHtml = '';
                 itemsByType[itemType].forEach(item => {
+                    const isZero = item.count === 0;
+                    const rowStyle = isZero ? 'border-bottom: 1px solid var(--border); background: rgba(239, 68, 68, 0.05);' : 'border-bottom: 1px solid var(--border);';
+                    const badgeStyle = isZero ? 'background: rgba(239, 68, 68, 0.1); color: var(--danger); padding: 4px 8px; border-radius: 4px; font-weight: 600;' : 'background: rgba(157, 113, 232, 0.1); color: var(--purple); padding: 4px 8px; border-radius: 4px; font-weight: 600;';
+                    const inputStyle = isZero ? 'width: 60px; padding: 4px; border-radius: 6px; border: 1px solid var(--danger); font-family: var(--font-body); font-weight: 600; text-align: center; color: var(--danger);' : 'width: 60px; padding: 4px; border-radius: 6px; border: 1px solid var(--border); font-family: var(--font-body); font-weight: 600; text-align: center;';
+
                     rowsHtml += `
-                        <tr style="border-bottom: 1px solid var(--border);">
+                        <tr style="${rowStyle}">
                             <td style="padding: 10px;">
-                                <span class="badge bg-secondary" style="background: rgba(157, 113, 232, 0.1); color: var(--purple); padding: 4px 8px; border-radius: 4px; font-weight: 600;">${escapeHtml(item.size)}</span>
+                                <span class="badge" style="${badgeStyle}">${escapeHtml(item.size)}</span>
                             </td>
                             <td style="padding: 10px;">
                                 <div style="display: flex; align-items: center; gap: 5px;">
                                     <button class="btn btn-sm btn-outline" style="padding: 2px 8px; font-weight: 700;" onclick="adjustStock('${escapeAttribute(item.category)}', '${escapeAttribute(item.itemType)}', '${escapeAttribute(item.size)}', -1, this)">-</button>
                                     <input type="number" value="${item.count}" min="0" 
-                                        style="width: 60px; padding: 4px; border-radius: 6px; border: 1px solid var(--border); font-family: var(--font-body); font-weight: 600; text-align: center;"
+                                        style="${inputStyle}"
                                         onchange="updateStockCount('${escapeAttribute(item.category)}', '${escapeAttribute(item.itemType)}', '${escapeAttribute(item.size)}', this.value)">
                                     <button class="btn btn-sm btn-outline" style="padding: 2px 8px; font-weight: 700;" onclick="adjustStock('${escapeAttribute(item.category)}', '${escapeAttribute(item.itemType)}', '${escapeAttribute(item.size)}', 1, this)">+</button>
                                 </div>
@@ -902,7 +907,13 @@ function renderUniforms() {
                             <span class="material-symbols-rounded" style="color: var(--purple);">${icon}</span>
                             <span>${escapeHtml(itemType)}</span>
                         </div>
-                        <span class="material-symbols-rounded expand-icon" style="transition: transform 0.3s;">expand_more</span>
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <button class="btn-delete" style="background: none; border: none; color: var(--danger); cursor: pointer; display: flex; align-items: center; padding: 5px; border-radius: 50%; transition: background 0.2s;" 
+                                onclick="event.stopPropagation(); deleteItemType('${escapeAttribute(category)}', '${escapeAttribute(itemType)}')">
+                                <span class="material-symbols-rounded" style="font-size: 20px;">delete</span>
+                            </button>
+                            <span class="material-symbols-rounded expand-icon" style="transition: transform 0.3s;">expand_more</span>
+                        </div>
                     </summary>
                     <div class="accordion-content" style="padding: 15px; border-top: 1px solid var(--border);">
                         <table style="width: 100%; border-collapse: collapse;">
@@ -929,6 +940,28 @@ function renderUniforms() {
                 container.appendChild(details);
             }
         });
+    }
+}
+
+async function deleteItemType(category, itemType) {
+    if (!confirm(`Are you sure you want to delete all sizes for ${itemType} in ${category}?`)) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE}/uniforms`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ category, itemType })
+        });
+
+        if (!response.ok) throw new Error('Failed to delete item type');
+
+        alert('Item type deleted successfully.');
+        loadUniforms();
+    } catch (error) {
+        console.error(error);
+        alert('Failed to delete item type.');
     }
 }
 

@@ -332,6 +332,20 @@ app.post('/api/uniforms', async (req, res) => {
     }
 });
 
+app.delete('/api/uniforms', async (req, res) => {
+    try {
+        const { category, itemType } = req.body;
+        if (!category || !itemType) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+        
+        await Uniform.deleteMany({ category, itemType });
+        res.json({ success: true, message: 'Item type deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // Fallback route to serve index.html for unknown routes (SPA behavior if needed)
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
