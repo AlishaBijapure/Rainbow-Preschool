@@ -866,15 +866,32 @@ function renderUniforms() {
                     <td><strong>${escapeHtml(item.itemType)}</strong></td>
                     <td><span class="badge bg-secondary" style="background: rgba(157, 113, 232, 0.1); color: var(--purple); padding: 4px 8px; border-radius: 4px; font-weight: 600;">${escapeHtml(item.size)}</span></td>
                     <td>
-                        <input type="number" value="${item.count}" min="0" 
-                            style="width: 80px; padding: 6px; border-radius: 6px; border: 1px solid var(--border); font-family: var(--font-body); font-weight: 600;"
-                            onchange="updateStockCount('${escapeAttribute(item.category)}', '${escapeAttribute(item.itemType)}', '${escapeAttribute(item.size)}', this.value)">
+                        <div style="display: flex; align-items: center; gap: 5px;">
+                            <button class="btn btn-sm btn-outline" style="padding: 4px 10px; font-weight: 700;" onclick="adjustStock('${escapeAttribute(item.category)}', '${escapeAttribute(item.itemType)}', '${escapeAttribute(item.size)}', -1, this)">-</button>
+                            <input type="number" value="${item.count}" min="0" 
+                                style="width: 60px; padding: 6px; border-radius: 6px; border: 1px solid var(--border); font-family: var(--font-body); font-weight: 600; text-align: center;"
+                                onchange="updateStockCount('${escapeAttribute(item.category)}', '${escapeAttribute(item.itemType)}', '${escapeAttribute(item.size)}', this.value)">
+                            <button class="btn btn-sm btn-outline" style="padding: 4px 10px; font-weight: 700;" onclick="adjustStock('${escapeAttribute(item.category)}', '${escapeAttribute(item.itemType)}', '${escapeAttribute(item.size)}', 1, this)">+</button>
+                        </div>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
         });
     }
+}
+
+function adjustStock(category, itemType, size, change, buttonEl) {
+    const parent = buttonEl.parentElement;
+    const input = parent.querySelector('input[type="number"]');
+    if (!input) return;
+
+    let currentVal = Number(input.value) || 0;
+    let newVal = currentVal + change;
+    if (newVal < 0) newVal = 0;
+
+    input.value = newVal;
+    updateStockCount(category, itemType, size, newVal);
 }
 
 async function updateStockCount(category, itemType, size, newCount) {
