@@ -817,9 +817,9 @@ async function loadUniforms() {
 
 function renderUniforms() {
     const categories = {
-        'Girls Uniform': [document.getElementById('girlsUniformContainer'), document.getElementById('girlsUniformContainerAdmission')],
-        'Boys Uniform': [document.getElementById('boysUniformContainer'), document.getElementById('boysUniformContainerAdmission')],
-        'Sports Uniform': [document.getElementById('sportsUniformContainer'), document.getElementById('sportsUniformContainerAdmission')]
+        'Girls Uniform': [document.getElementById('girlsUniformContainer')],
+        'Boys Uniform': [document.getElementById('boysUniformContainer')],
+        'Sports Uniform': [document.getElementById('sportsUniformContainer')]
     };
 
     for (const key in categories) {
