@@ -281,7 +281,7 @@ async function handleAddStudent(event) {
         studentPhotoBase64 = null;
         const preview = document.getElementById('sPhotoPreview');
         if (preview) preview.innerHTML = '<span class="material-symbols-rounded">add_a_photo</span>';
-        
+
         toggleCustomAdmission();
         switchTab('dashboard');
     } catch (error) {
@@ -504,7 +504,7 @@ function openProfileModal(student) {
     const profImg = document.getElementById('pPhotoImg');
     const profPlaceholder = document.getElementById('pPhotoPlaceholder');
     profilePhotoBase64 = null; // Reset for this profile
-    
+
     if (student.photo) {
         if (profImg && profPlaceholder) {
             profImg.src = student.photo;
@@ -695,15 +695,10 @@ function renderEnquiries() {
     tbody.innerHTML = '';
 
     const showPendingOnly = document.getElementById('pendingEnquiriesFilter')?.checked || false;
-    
+
     let filteredEnquiries = currentEnquiries;
     if (showPendingOnly) {
         filteredEnquiries = currentEnquiries.filter(enquiry => !enquiry.contacted);
-    }
-
-    const countBadge = document.getElementById('enquiriesCountBadge');
-    if (countBadge) {
-        countBadge.textContent = filteredEnquiries.length;
     }
 
     if (!filteredEnquiries.length) {
@@ -854,7 +849,7 @@ function renderUniforms() {
 
     for (const category in grouped) {
         const containers = categories[category];
-        
+
         const itemsByType = {};
         grouped[category].forEach(item => {
             if (!itemsByType[item.itemType]) {
