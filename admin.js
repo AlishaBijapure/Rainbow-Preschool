@@ -817,14 +817,14 @@ async function loadUniforms() {
 
 function renderUniforms() {
     const categories = {
-        'Girls Uniform': [document.getElementById('girlsUniformTableBody'), document.getElementById('girlsUniformTableBodyAdmission')],
-        'Boys Uniform': [document.getElementById('boysUniformTableBody'), document.getElementById('boysUniformTableBodyAdmission')],
-        'Sports Uniform': [document.getElementById('sportsUniformTableBody'), document.getElementById('sportsUniformTableBodyAdmission')]
+        'Girls Uniform': [document.getElementById('girlsUniformContainer'), document.getElementById('girlsUniformContainerAdmission')],
+        'Boys Uniform': [document.getElementById('boysUniformContainer'), document.getElementById('boysUniformContainerAdmission')],
+        'Sports Uniform': [document.getElementById('sportsUniformContainer'), document.getElementById('sportsUniformContainerAdmission')]
     };
 
     for (const key in categories) {
-        categories[key].forEach(tbody => {
-            if (tbody) tbody.innerHTML = '';
+        categories[key].forEach(container => {
+            if (container) container.innerHTML = '';
         });
     }
 
@@ -841,42 +841,93 @@ function renderUniforms() {
     });
 
     for (const category in grouped) {
-        const tbodies = categories[category];
+        const containers = categories[category];
         
-        grouped[category].sort((a, b) => {
-            if (a.itemType !== b.itemType) {
-                return a.itemType.localeCompare(b.itemType);
+        const itemsByType = {};
+        grouped[category].forEach(item => {
+            if (!itemsByType[item.itemType]) {
+                itemsByType[item.itemType] = [];
             }
-            return parseFloat(a.size) - parseFloat(b.size) || a.size.localeCompare(b.size);
+            itemsByType[item.itemType].push(item);
         });
 
-        tbodies.forEach(tbody => {
-            if (!tbody) return;
+        containers.forEach(container => {
+            if (!container) return;
 
             if (grouped[category].length === 0) {
-                tbody.innerHTML = '<tr><td colspan="3" class="empty-row">No items found.</td></tr>';
+                container.innerHTML = '<div class="empty-row" style="padding: 20px; text-align: center; color: var(--text-muted); font-style: italic;">No items found.</div>';
                 return;
             }
 
-            grouped[category].forEach(item => {
-                const tr = document.createElement('tr');
-                tr.style.cursor = 'default'; 
-                
-                tr.innerHTML = `
-                    <td><strong>${escapeHtml(item.itemType)}</strong></td>
-                    <td><span class="badge bg-secondary" style="background: rgba(157, 113, 232, 0.1); color: var(--purple); padding: 4px 8px; border-radius: 4px; font-weight: 600;">${escapeHtml(item.size)}</span></td>
-                    <td>
-                        <div style="display: flex; align-items: center; gap: 5px;">
-                            <button class="btn btn-sm btn-outline" style="padding: 4px 10px; font-weight: 700;" onclick="adjustStock('${escapeAttribute(item.category)}', '${escapeAttribute(item.itemType)}', '${escapeAttribute(item.size)}', -1, this)">-</button>
-                            <input type="number" value="${item.count}" min="0" 
-                                style="width: 60px; padding: 6px; border-radius: 6px; border: 1px solid var(--border); font-family: var(--font-body); font-weight: 600; text-align: center;"
-                                onchange="updateStockCount('${escapeAttribute(item.category)}', '${escapeAttribute(item.itemType)}', '${escapeAttribute(item.size)}', this.value)">
-                            <button class="btn btn-sm btn-outline" style="padding: 4px 10px; font-weight: 700;" onclick="adjustStock('${escapeAttribute(item.category)}', '${escapeAttribute(item.itemType)}', '${escapeAttribute(item.size)}', 1, this)">+</button>
+            for (const itemType in itemsByType) {
+                itemsByType[itemType].sort((a, b) => parseFloat(a.size) - parseFloat(b.size) || a.size.localeCompare(b.size));
+
+                let icon = 'checkroom';
+                if (itemType.toLowerCase().includes('skirt')) icon = 'apparel';
+                if (itemType.toLowerCase().includes('pant')) icon = 'straighten';
+                if (itemType.toLowerCase().includes('t-shirt')) icon = 'apparel';
+                if (itemType.toLowerCase().includes('shirt')) icon = 'checkroom';
+
+                const details = document.createElement('details');
+                details.className = 'uniform-accordion';
+                details.style.marginBottom = '10px';
+                details.style.border = '1px solid var(--border)';
+                details.style.borderRadius = 'var(--radius-md)';
+                details.style.background = 'var(--surface)';
+                details.style.overflow = 'hidden';
+
+                let rowsHtml = '';
+                itemsByType[itemType].forEach(item => {
+                    rowsHtml += `
+                        <tr style="border-bottom: 1px solid var(--border);">
+                            <td style="padding: 10px;">
+                                <span class="badge bg-secondary" style="background: rgba(157, 113, 232, 0.1); color: var(--purple); padding: 4px 8px; border-radius: 4px; font-weight: 600;">${escapeHtml(item.size)}</span>
+                            </td>
+                            <td style="padding: 10px;">
+                                <div style="display: flex; align-items: center; gap: 5px;">
+                                    <button class="btn btn-sm btn-outline" style="padding: 2px 8px; font-weight: 700;" onclick="adjustStock('${escapeAttribute(item.category)}', '${escapeAttribute(item.itemType)}', '${escapeAttribute(item.size)}', -1, this)">-</button>
+                                    <input type="number" value="${item.count}" min="0" 
+                                        style="width: 60px; padding: 4px; border-radius: 6px; border: 1px solid var(--border); font-family: var(--font-body); font-weight: 600; text-align: center;"
+                                        onchange="updateStockCount('${escapeAttribute(item.category)}', '${escapeAttribute(item.itemType)}', '${escapeAttribute(item.size)}', this.value)">
+                                    <button class="btn btn-sm btn-outline" style="padding: 2px 8px; font-weight: 700;" onclick="adjustStock('${escapeAttribute(item.category)}', '${escapeAttribute(item.itemType)}', '${escapeAttribute(item.size)}', 1, this)">+</button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                details.innerHTML = `
+                    <summary style="padding: 15px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: space-between; background: var(--bg-light); list-style: none;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span class="material-symbols-rounded" style="color: var(--purple);">${icon}</span>
+                            <span>${escapeHtml(itemType)}</span>
                         </div>
-                    </td>
+                        <span class="material-symbols-rounded expand-icon" style="transition: transform 0.3s;">expand_more</span>
+                    </summary>
+                    <div class="accordion-content" style="padding: 15px; border-top: 1px solid var(--border);">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr style="text-align: left; color: var(--text-muted); font-size: 0.9rem;">
+                                    <th style="padding: 8px;">Size</th>
+                                    <th style="padding: 8px;">Stock Count</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${rowsHtml}
+                            </tbody>
+                        </table>
+                    </div>
                 `;
-                tbody.appendChild(tr);
-            });
+
+                details.addEventListener('toggle', () => {
+                    const icon = details.querySelector('.expand-icon');
+                    if (icon) {
+                        icon.style.transform = details.open ? 'rotate(180deg)' : 'rotate(0deg)';
+                    }
+                });
+
+                container.appendChild(details);
+            }
         });
     }
 }
