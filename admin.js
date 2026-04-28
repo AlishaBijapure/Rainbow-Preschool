@@ -694,12 +694,19 @@ function renderEnquiries() {
     if (!tbody) return;
     tbody.innerHTML = '';
 
-    if (!currentEnquiries.length) {
-        tbody.innerHTML = '<tr><td colspan="5" class="empty-row">No enquiries received yet.</td></tr>';
+    const showPendingOnly = document.getElementById('pendingEnquiriesFilter')?.checked || false;
+    
+    let filteredEnquiries = currentEnquiries;
+    if (showPendingOnly) {
+        filteredEnquiries = currentEnquiries.filter(enquiry => !enquiry.contacted);
+    }
+
+    if (!filteredEnquiries.length) {
+        tbody.innerHTML = `<tr><td colspan="5" class="empty-row">${showPendingOnly ? 'No pending enquiries found.' : 'No enquiries received yet.'}</td></tr>`;
         return;
     }
 
-    currentEnquiries.forEach(enquiry => {
+    filteredEnquiries.forEach(enquiry => {
         const date = safeDate(enquiry.createdAt);
         const tr = document.createElement('tr');
         const isContacted = Boolean(enquiry.contacted);
