@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /admin.css
+Disallow: /admin.js
+
+# Disallow backend API endpoints
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://rainbowpreschoolsolapur.com/sitemap.xml
