@@ -626,13 +626,17 @@ section {
     color: var(--text-dark);
 }
 
+.schedule-preview {
+    text-align: center;
+}
+
 .schedule-preview h3 {
     background: rgba(255, 255, 255, 0.9);
     padding: 12px 30px;
     border-radius: var(--radius-sm);
     color: var(--navy);
     display: inline-block;
-    margin: 0 auto 2rem;
+    margin-bottom: 2rem;
     border: 2px solid var(--yellow);
     box-shadow: var(--shadow-soft);
 }
