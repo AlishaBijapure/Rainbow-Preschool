@@ -634,16 +634,14 @@ section {
     text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4);
 }
 
-.program-card,
-.timeline-item .activity {
+.program-card {
     background: rgba(255, 255, 255, 0.463) !important;
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
     border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-.program-card p,
-.timeline-item .activity {
+.program-card p {
     font-weight: 600;
 }
 
@@ -686,26 +684,27 @@ section {
 .timeline-item .time {
     width: 90px;
     font-weight: 800;
-    /* bolded */
-    color: var(--purple);
+    color: var(--navy);
     text-align: right;
     padding-right: 20px;
-    /* Clean white border */
-    -webkit-text-stroke: 1.5px white;
-    text-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+    font-size: 1.2rem;
 }
 
 .timeline-item .activity {
-    background: white;
-    padding: 15px 20px;
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-card);
+    background: rgba(255, 255, 255, 0.95) !important;
+    padding: 20px 25px;
+    border-radius: 15px;
+    border: 3px solid var(--yellow);
+    box-shadow: var(--shadow-hover);
     flex: 1;
     margin-left: 20px;
     position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-dark);
 }
 
 .timeline-item .activity::before {
