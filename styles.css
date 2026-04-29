@@ -16,6 +16,9 @@
     /* Lavender/Purple */
     --orange: #FF8F00;
     /* Orange */
+    --navy: #000080;
+    /* Navy Blue */
+
 
     --bg-light: #F9FAFB;
     --bg-soft-blue: #F0F7FF;
@@ -480,7 +483,7 @@ section {
     padding-top: 100px;
     padding-bottom: 50px;
     /* Fullscreen Fixed Background with Gradient Overlay and Image */
-    background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.186)), url('assets/images/rainbow.webp');
+    background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.186)), url('assets/images/pic-0.webp');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -490,8 +493,8 @@ section {
 
 .hero-wrapper {
     background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(1px);
+    -webkit-backdrop-filter: blur(1px);
     border: 1px solid rgba(255, 255, 255, 0);
     border-radius: var(--radius-lg);
     padding: 60px 40px;
@@ -513,15 +516,13 @@ section {
 .hero-title {
     margin-bottom: 25px;
     line-height: 1.1;
-    /* Clean, glitch-free black sticker outline using multiple overlapping drop shadows */
-    filter: drop-shadow(3px 3px 0px var(--text-dark)) drop-shadow(-3px -3px 0px var(--text-dark)) drop-shadow(-3px 3px 0px var(--text-dark)) drop-shadow(3px -3px 0px var(--text-dark)) drop-shadow(0px 10px 20px rgba(0, 0, 0, 0.5));
+    /* Clean, glitch-free navy blue sticker outline using multiple overlapping drop shadows */
+    filter: drop-shadow(3px 3px 0px var(--navy)) drop-shadow(-3px -3px 0px var(--navy)) drop-shadow(-3px 3px 0px var(--navy)) drop-shadow(3px -3px 0px var(--navy)) drop-shadow(0px 10px 20px rgba(0, 0, 0, 0.5));
 }
 
 .rainbow-word,
 .preschool-word {
-    background: linear-gradient(to right, #FF3366, #FF9933, #FFD500, #33CC99, #3399FF, #9933FF);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--yellow);
     display: inline-block;
     padding-bottom: 10px;
     /* Prevents text clipping on the bottom */
@@ -541,18 +542,16 @@ section {
 
 .hero-wrapper p {
     font-size: 1.4rem;
-    color: #FFFFFF;
+    color: var(--navy);
     font-weight: 700;
     margin-bottom: 40px;
     max-width: 600px;
     margin-left: auto;
     margin-right: auto;
-    /* Clean black border effect using outside shadows */
-    text-shadow: 1.5px 1.5px 0 var(--text-dark),
-        -1.5px -1.5px 0 var(--text-dark),
-        1.5px -1.5px 0 var(--text-dark),
-        -1.5px 1.5px 0 var(--text-dark),
-        0px 6px 10px rgba(0, 0, 0, 0.6);
+    background-color: var(--yellow);
+    padding: 15px 25px;
+    border-radius: 8px;
+    display: inline-block;
 }
 
 .hero-buttons {
