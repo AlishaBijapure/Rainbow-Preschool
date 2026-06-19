@@ -1246,8 +1246,18 @@ function openReceiptDetailsModal(receipt) {
 }
 
 function printReceipt() {
-    const printContents = document.getElementById('receiptPrintArea').innerHTML;
-    
+    const logoUrl = window.location.origin + '/assets/images/Rainbow Preschool Logo.webp';
+    const recNo = document.getElementById('recModalNo').textContent;
+    const recDate = document.getElementById('recModalDate').textContent;
+    const studentName = document.getElementById('recModalStudent').textContent;
+    const className = document.getElementById('recModalClass').textContent;
+    const academicYear = document.getElementById('recModalYear').textContent;
+    const payerName = document.getElementById('recModalPayer').textContent;
+    const receiverName = document.getElementById('recModalReceiver').textContent;
+    const mode = document.getElementById('recModalMode').textContent;
+    const amount = document.getElementById('recModalAmount').textContent;
+    const modeClass = mode === 'Online' ? 'bg-primary' : 'bg-secondary';
+
     const iframe = document.createElement('iframe');
     iframe.name = "printFrame";
     iframe.style.position = "absolute";
@@ -1260,85 +1270,156 @@ function printReceipt() {
     doc.write(`
         <html>
         <head>
-            <title>Print Receipt</title>
+            <title>Receipt - ${recNo}</title>
             <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
             <style>
                 body {
                     font-family: 'Quicksand', sans-serif;
-                    padding: 40px;
-                    color: #333;
+                    margin: 0;
+                    padding: 20px;
+                    background-color: #fff;
+                    -webkit-print-color-adjust: exact;
+                    print-color-adjust: exact;
                 }
                 .receipt-print-container {
-                    max-width: 450px;
-                    margin: 0 auto;
-                    border: 1px solid #ddd;
+                    max-width: 420px;
+                    margin: 20px auto;
+                    border: 1px solid #e2e8f0;
                     padding: 30px;
-                    border-radius: 8px;
-                    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+                    border-radius: 12px;
+                    background: #fff;
                 }
                 .receipt-header {
                     text-align: center;
                     margin-bottom: 25px;
-                    border-bottom: 2px dashed #eee;
-                    padding-bottom: 15px;
+                    border-bottom: 2px dashed #e2e8f0;
+                    padding-bottom: 20px;
+                }
+                .receipt-logo {
+                    height: 70px;
+                    width: 70px;
+                    border-radius: 50%;
+                    margin-bottom: 12px;
+                    object-fit: cover;
+                    border: 2px solid #e8dbfc;
                 }
                 .receipt-header h2 {
                     font-family: 'Fredoka One', sans-serif;
                     color: #9d71e8;
                     margin: 0 0 5px 0;
+                    font-size: 1.6rem;
                 }
                 .text-muted {
-                    color: #777;
+                    color: #64748b;
                 }
                 .receipt-body {
                     display: flex;
                     flex-direction: column;
                     gap: 12px;
-                    font-size: 1rem;
                 }
-                .row {
+                .receipt-row {
                     display: flex;
                     justify-content: space-between;
+                    font-size: 0.95rem;
+                    line-height: 1.4;
                 }
                 .border-top {
-                    border-top: 1px solid #eee;
-                    padding-top: 10px;
+                    border-top: 1px solid #f1f5f9;
+                    padding-top: 12px;
+                    margin-top: 4px;
                 }
                 .total-row {
                     border-top: 2px solid #9d71e8;
                     padding-top: 15px;
-                    margin-top: 10px;
-                    font-size: 1.25rem;
+                    margin-top: 15px;
+                    font-size: 1.3rem;
                     font-weight: bold;
                     color: #9d71e8;
                 }
                 .badge {
                     display: inline-block;
-                    padding: 4px 8px;
-                    border-radius: 4px;
-                    font-size: 0.85rem;
-                    font-weight: 600;
+                    padding: 4px 10px;
+                    border-radius: 6px;
+                    font-size: 0.8rem;
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
                 }
                 .bg-primary {
-                    background-color: rgba(157, 113, 232, 0.1);
+                    background-color: #f3e8ff;
                     color: #9d71e8;
                 }
                 .bg-secondary {
-                    background-color: #f1f3f5;
-                    color: #495057;
+                    background-color: #f1f5f9;
+                    color: #475569;
+                }
+                @media print {
+                    body {
+                        padding: 0;
+                    }
+                    .receipt-print-container {
+                        border: none;
+                        max-width: 100%;
+                        margin: 0;
+                        padding: 0;
+                    }
                 }
             </style>
         </head>
         <body>
             <div class="receipt-print-container">
-                \${printContents}
+                <div class="receipt-header">
+                    <img src="${logoUrl}" alt="Rainbow Preschool Logo" class="receipt-logo">
+                    <h2>Rainbow Preschool</h2>
+                    <p class="text-muted" style="margin: 0; font-size: 0.9rem; font-weight: 500;">FEE PAYMENT RECEIPT</p>
+                </div>
+                <div class="receipt-body">
+                    <div class="receipt-row">
+                        <span class="text-muted">Receipt No:</span>
+                        <strong style="color: #0f172a;">${recNo}</strong>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="text-muted">Date:</span>
+                        <span>${recDate}</span>
+                    </div>
+                    <div class="receipt-row border-top">
+                        <span class="text-muted">Student Name:</span>
+                        <strong style="color: #0f172a;">${studentName}</strong>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="text-muted">Class:</span>
+                        <span>${className}</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="text-muted">Academic Year:</span>
+                        <span>${academicYear}</span>
+                    </div>
+                    <div class="receipt-row border-top">
+                        <span class="text-muted">Payer Name:</span>
+                        <span>${payerName}</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="text-muted">Received By:</span>
+                        <span>${receiverName}</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="text-muted">Payment Mode:</span>
+                        <span class="badge ${modeClass}">${mode}</span>
+                    </div>
+                    <div class="receipt-row total-row">
+                        <span>Amount Paid:</span>
+                        <span>${amount}</span>
+                    </div>
+                </div>
             </div>
             <script>
                 window.onload = function() {
-                    window.print();
                     setTimeout(function() {
-                        window.frameElement.remove();
-                    }, 500);
+                        window.print();
+                        setTimeout(function() {
+                            window.frameElement.remove();
+                        }, 500);
+                    }, 250);
                 };
             <\/script>
         </body>
