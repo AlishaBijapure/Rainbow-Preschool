@@ -1170,7 +1170,7 @@ function applyReceiptFilters() {
 
     filtered.forEach(r => {
         const tr = document.createElement('tr');
-        tr.addEventListener('click', () => openProfileModal(r.student));
+        tr.addEventListener('click', () => openReceiptDetailsModal(r));
         const mode = r.paymentMode || 'Cash';
 
         tr.innerHTML = `
@@ -1222,5 +1222,128 @@ function refreshActiveTab() {
     } else if (activeTab === 'uniform' || activeTab === 'add-student') {
         loadUniforms();
     }
+}
+
+function openReceiptDetailsModal(receipt) {
+    document.getElementById('recModalNo').textContent = receipt.receiptNumber || '-';
+    document.getElementById('recModalDate').textContent = formatDate(safeDate(receipt.date));
+    document.getElementById('recModalStudent').textContent = receipt.studentName || '';
+    document.getElementById('recModalClass').textContent = receipt.classAdmitted || '';
+    document.getElementById('recModalYear').textContent = receipt.student?.academicYear || getActiveYear();
+    document.getElementById('recModalPayer').textContent = receipt.payerName || '-';
+    document.getElementById('recModalReceiver').textContent = receipt.receiverName || '-';
+    
+    const mode = receipt.paymentMode || 'Cash';
+    const modeEl = document.getElementById('recModalMode');
+    if (modeEl) {
+        modeEl.textContent = mode;
+        modeEl.className = `badge ${mode === 'Online' ? 'bg-primary' : 'bg-secondary'}`;
+    }
+    
+    document.getElementById('recModalAmount').textContent = formatCurrency(receipt.amountPaid);
+    
+    document.getElementById('receiptDetailsModal')?.classList.add('show');
+}
+
+function printReceipt() {
+    const printContents = document.getElementById('receiptPrintArea').innerHTML;
+    
+    const iframe = document.createElement('iframe');
+    iframe.name = "printFrame";
+    iframe.style.position = "absolute";
+    iframe.style.width = "0px";
+    iframe.style.height = "0px";
+    iframe.style.border = "none";
+    document.body.appendChild(iframe);
+
+    const doc = iframe.contentWindow.document;
+    doc.write(`
+        <html>
+        <head>
+            <title>Print Receipt</title>
+            <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+            <style>
+                body {
+                    font-family: 'Quicksand', sans-serif;
+                    padding: 40px;
+                    color: #333;
+                }
+                .receipt-print-container {
+                    max-width: 450px;
+                    margin: 0 auto;
+                    border: 1px solid #ddd;
+                    padding: 30px;
+                    border-radius: 8px;
+                    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+                }
+                .receipt-header {
+                    text-align: center;
+                    margin-bottom: 25px;
+                    border-bottom: 2px dashed #eee;
+                    padding-bottom: 15px;
+                }
+                .receipt-header h2 {
+                    font-family: 'Fredoka One', sans-serif;
+                    color: #9d71e8;
+                    margin: 0 0 5px 0;
+                }
+                .text-muted {
+                    color: #777;
+                }
+                .receipt-body {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 12px;
+                    font-size: 1rem;
+                }
+                .row {
+                    display: flex;
+                    justify-content: space-between;
+                }
+                .border-top {
+                    border-top: 1px solid #eee;
+                    padding-top: 10px;
+                }
+                .total-row {
+                    border-top: 2px solid #9d71e8;
+                    padding-top: 15px;
+                    margin-top: 10px;
+                    font-size: 1.25rem;
+                    font-weight: bold;
+                    color: #9d71e8;
+                }
+                .badge {
+                    display: inline-block;
+                    padding: 4px 8px;
+                    border-radius: 4px;
+                    font-size: 0.85rem;
+                    font-weight: 600;
+                }
+                .bg-primary {
+                    background-color: rgba(157, 113, 232, 0.1);
+                    color: #9d71e8;
+                }
+                .bg-secondary {
+                    background-color: #f1f3f5;
+                    color: #495057;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="receipt-print-container">
+                \${printContents}
+            </div>
+            <script>
+                window.onload = function() {
+                    window.print();
+                    setTimeout(function() {
+                        window.frameElement.remove();
+                    }, 500);
+                };
+            <\/script>
+        </body>
+        </html>
+    `);
+    doc.close();
 }
 
