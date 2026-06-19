@@ -1296,12 +1296,11 @@ function printReceipt() {
                     padding-bottom: 20px;
                 }
                 .receipt-logo {
-                    height: 70px;
-                    width: 70px;
+                    height: 90px;
+                    width: 90px;
                     border-radius: 50%;
                     margin-bottom: 12px;
                     object-fit: cover;
-                    border: 2px solid #e8dbfc;
                 }
                 .receipt-header h2 {
                     font-family: 'Fredoka One', sans-serif;
