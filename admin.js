@@ -1270,7 +1270,7 @@ function printReceipt() {
     doc.write(`
         <html>
         <head>
-            <title>Receipt - ${recNo}</title>
+            <title>Fee receipt - ${recNo} - ${studentName}</title>
             <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
             <style>
                 body {
