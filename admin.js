@@ -95,6 +95,7 @@ function switchTab(tabId) {
     if (tabId === 'fee-settings') loadFeeSettings();
     if (tabId === 'enquiries') fetchEnquiries();
     if (tabId === 'uniform' || tabId === 'add-student') loadUniforms();
+    if (tabId === 'fee-receipts') loadFeeReceipts();
 }
 
 function calculateAge() {
@@ -179,7 +180,7 @@ function getActiveYear() {
 
 function onAcademicYearChange() {
     loadFeeSettings();
-    loadStudents();
+    refreshActiveTab();
 }
 
 async function loadFeeSettings() {
@@ -467,7 +468,7 @@ async function handleFeeCollection(event) {
 
         alert('Payment recorded successfully.');
         closeModal('feeModal');
-        loadStudents();
+        refreshActiveTab();
     } catch (error) {
         console.error(error);
         alert(error.message || 'Failed to record payment.');
@@ -678,7 +679,7 @@ async function saveProfileChanges() {
 
         alert('Profile updated successfully.');
         closeModal('profileModal');
-        loadStudents();
+        refreshActiveTab();
     } catch (error) {
         console.error(error);
         alert('Failed to update profile.');
@@ -699,7 +700,7 @@ async function deleteStudent() {
 
         alert('Student deleted entirely.');
         closeModal('profileModal');
-        loadStudents();
+        refreshActiveTab();
     } catch (error) {
         console.error(error);
         alert('Failed to delete student.');
@@ -1096,3 +1097,130 @@ function escapeHtml(value = '') {
 function escapeAttribute(value = '') {
     return escapeHtml(value).replace(/`/g, '&#096;');
 }
+
+async function loadFeeReceipts() {
+    try {
+        const response = await fetch(`${API_BASE}/students?academicYear=${encodeURIComponent(getActiveYear())}`);
+        currentStudents = await response.json();
+        if (!Array.isArray(currentStudents)) currentStudents = [];
+        applyReceiptFilters();
+    } catch (error) {
+        currentStudents = [];
+        applyReceiptFilters();
+        console.error('Error loading students for receipts', error);
+    }
+}
+
+function applyReceiptFilters() {
+    const searchVal = getValue('filterReceiptSearch').toLowerCase().trim();
+    const classVal = getValue('filterReceiptClass') || 'All';
+    const startDateVal = getValue('filterReceiptStartDate');
+    const endDateVal = getValue('filterReceiptEndDate');
+    const modeVal = getValue('filterReceiptPaymentMode') || 'All';
+
+    let allReceipts = [];
+    currentStudents.forEach(student => {
+        if (student.fees && Array.isArray(student.fees.installments)) {
+            student.fees.installments.forEach(inst => {
+                allReceipts.push({
+                    ...inst,
+                    student: student,
+                    studentName: `${student.firstName || ''} ${student.lastName || ''}`.trim(),
+                    classAdmitted: student.classAdmitted || ''
+                });
+            });
+        }
+    });
+
+    // Sort chronologically (newest first)
+    allReceipts.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    let filtered = allReceipts;
+
+    if (searchVal) {
+        filtered = filtered.filter(r => 
+            r.studentName.toLowerCase().includes(searchVal) ||
+            (r.receiptNumber && r.receiptNumber.toLowerCase().includes(searchVal))
+        );
+    }
+
+    if (classVal !== 'All') {
+        filtered = filtered.filter(r => r.classAdmitted === classVal);
+    }
+
+    if (startDateVal) {
+        const start = new Date(startDateVal);
+        start.setHours(0, 0, 0, 0);
+        filtered = filtered.filter(r => new Date(r.date) >= start);
+    }
+
+    if (endDateVal) {
+        const end = new Date(endDateVal);
+        end.setHours(23, 59, 59, 999);
+        filtered = filtered.filter(r => new Date(r.date) <= end);
+    }
+
+    if (modeVal !== 'All') {
+        filtered = filtered.filter(r => (r.paymentMode || 'Cash') === modeVal);
+    }
+
+    const tbody = document.querySelector('#receiptsTable tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    filtered.forEach(r => {
+        const tr = document.createElement('tr');
+        tr.addEventListener('click', () => openProfileModal(r.student));
+        const mode = r.paymentMode || 'Cash';
+
+        tr.innerHTML = `
+            <td><strong>${escapeHtml(r.receiptNumber || '-')}</strong></td>
+            <td><strong>${escapeHtml(r.studentName)}</strong></td>
+            <td>${escapeHtml(r.classAdmitted)}</td>
+            <td>${formatDate(safeDate(r.date))}</td>
+            <td><span class="amount-positive">${formatCurrency(r.amountPaid)}</span></td>
+            <td>${escapeHtml(r.payerName)}</td>
+            <td>${escapeHtml(r.receiverName)}</td>
+            <td><span class="badge ${mode === 'Online' ? 'bg-primary' : 'bg-secondary'}">${escapeHtml(mode)}</span></td>
+        `;
+        tbody.appendChild(tr);
+    });
+
+    if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" class="empty-row">No receipts match the selected filters.</td></tr>';
+    }
+
+    const countBadge = document.getElementById('receiptsCountBadge');
+    if (countBadge) {
+        countBadge.textContent = `${filtered.length} Receipts`;
+    }
+}
+
+function resetReceiptFilters() {
+    ['filterReceiptSearch', 'filterReceiptStartDate', 'filterReceiptEndDate'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+    });
+    const classSelect = document.getElementById('filterReceiptClass');
+    if (classSelect) classSelect.value = 'All';
+    const modeSelect = document.getElementById('filterReceiptPaymentMode');
+    if (modeSelect) modeSelect.value = 'All';
+
+    applyReceiptFilters();
+}
+
+function refreshActiveTab() {
+    const activeTab = document.querySelector('.nav-btn.active')?.dataset.tab || 'dashboard';
+    if (activeTab === 'fee-receipts') {
+        loadFeeReceipts();
+    } else if (activeTab === 'dashboard') {
+        loadStudents();
+    } else if (activeTab === 'fee-settings') {
+        loadFeeSettings();
+    } else if (activeTab === 'enquiries') {
+        fetchEnquiries();
+    } else if (activeTab === 'uniform' || activeTab === 'add-student') {
+        loadUniforms();
+    }
+}
+

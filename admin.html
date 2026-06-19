@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet" />
     
     <link rel="icon" type="image/webp" href="assets/images/Rainbow Preschool Logo.webp">
-    <link rel="stylesheet" href="admin.css?v=2.2">
+    <link rel="stylesheet" href="admin.css?v=2.3">
 </head>
 <body>
     <div id="sidebarOverlay" class="sidebar-overlay" hidden></div>
@@ -38,6 +38,9 @@
                 </button>
                 <button class="nav-btn" data-tab="uniform">
                     <span class="material-symbols-rounded">checkroom</span> Uniform
+                </button>
+                <button class="nav-btn" data-tab="fee-receipts">
+                    <span class="material-symbols-rounded">receipt_long</span> Fee Receipts
                 </button>
             </nav>
             <div class="sidebar-footer">
@@ -335,6 +338,70 @@
                         </div>
                     </div>
                 </div>
+            </section>
+
+            <!-- Fee Receipts Section -->
+            <section id="fee-receipts" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Fee Receipts <span id="receiptsCountBadge" class="badge" style="background: rgba(157, 113, 232, 0.1); color: var(--purple); font-size: 0.8rem; margin-left: 10px; padding: 4px 10px;">0 Receipts</span></h3>
+                    </div>
+                    <div class="filters-bar" style="display: flex; gap: 15px; margin-bottom: 20px; align-items: center; background: var(--bg-light); padding: 15px; border-radius: var(--radius-md); flex-wrap: wrap;">
+                        <div class="input-group" style="margin-bottom: 0; flex: 1; min-width: 200px;">
+                            <label>Search Student / Receipt No</label>
+                            <input type="text" id="filterReceiptSearch" placeholder="Search name or receipt..." oninput="applyReceiptFilters()">
+                        </div>
+                        <div class="input-group" style="margin-bottom: 0;">
+                            <label>Filter by Class</label>
+                            <select id="filterReceiptClass" onchange="applyReceiptFilters()">
+                                <option value="All">All Classes</option>
+                                <option value="Playgroup">Playgroup</option>
+                                <option value="Nursery">Nursery</option>
+                                <option value="LKG">LKG</option>
+                                <option value="UKG">UKG</option>
+                            </select>
+                        </div>
+                        <div class="input-group" style="margin-bottom: 0;">
+                            <label>Start Date</label>
+                            <input type="date" id="filterReceiptStartDate" onchange="applyReceiptFilters()">
+                        </div>
+                        <div class="input-group" style="margin-bottom: 0;">
+                            <label>End Date</label>
+                            <input type="date" id="filterReceiptEndDate" onchange="applyReceiptFilters()">
+                        </div>
+                        <div class="input-group" style="margin-bottom: 0;">
+                            <label>Payment Mode</label>
+                            <select id="filterReceiptPaymentMode" onchange="applyReceiptFilters()">
+                                <option value="All">All Modes</option>
+                                <option value="Cash">Cash</option>
+                                <option value="Online">Online</option>
+                            </select>
+                        </div>
+                        <div class="input-group" style="margin-bottom: 0; display: flex; align-items: flex-end;">
+                            <button class="btn btn-outline btn-sm" onclick="resetReceiptFilters()" style="margin-top: 25px;">Clear Filters</button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="receiptsTable">
+                            <thead>
+                                <tr>
+                                    <th>Receipt No.</th>
+                                    <th>Student Name</th>
+                                    <th>Class</th>
+                                    <th>Date</th>
+                                    <th>Amount</th>
+                                    <th>Payer</th>
+                                    <th>Receiver</th>
+                                    <th>Payment Mode</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
         </main>
     </div>
 
@@ -525,6 +592,6 @@
         </div>
     </div>
 
-    <script src="admin.js?v=2.2"></script>
+    <script src="admin.js?v=2.3"></script>
 </body>
 </html>
