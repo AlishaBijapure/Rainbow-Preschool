@@ -162,7 +162,7 @@ async function fetchRecentActivity() {
                     activity.winners.forEach(winner => {
                         const photoSrc = winner.studentPhoto || 'assets/images/default-avatar.webp';
                         winnersHtml += `
-                            <div class="winner-card" style="background: white; border-radius: 20px; padding: 25px 30px; text-align: center; min-width: 220px; width: max-content; max-width: 350px; box-shadow: 0 15px 30px rgba(0,0,0,0.1); transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                            <div class="winner-card" style="background: white; border-radius: 20px; padding: 25px 30px; text-align: center; min-width: 220px; max-width: 100%; display: inline-block; box-sizing: border-box; box-shadow: 0 15px 30px rgba(0,0,0,0.1); transition: transform 0.3s ease, box-shadow 0.3s ease;">
                                 <div style="position: relative; width: 130px; height: 130px; margin: 0 auto 20px; border-radius: 50%; overflow: hidden; border: 5px solid #ff6b6b; box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);">
                                     <img src="${photoSrc}" alt="${winner.studentName}" style="width: 100%; height: 100%; object-fit: cover;">
                                 </div>
@@ -175,7 +175,7 @@ async function fetchRecentActivity() {
                     });
 
                     container.innerHTML += `
-                        <div style="background: linear-gradient(135deg, #ff6b6b, #ee5253); border-radius: 30px; padding: 40px; text-align: center; box-shadow: 0 15px 40px rgba(238, 82, 83, 0.3); position: relative; overflow: hidden; color: white;">
+                        <div style="background: linear-gradient(135deg, rgba(255, 107, 107, 0.85), rgba(238, 82, 83, 0.85)); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 30px; padding: 40px; text-align: center; box-shadow: 0 15px 40px rgba(238, 82, 83, 0.3); position: relative; overflow: hidden; color: white;">
                             <!-- Decorative elements -->
                             <div style="position: absolute; top: -50px; left: -50px; width: 200px; height: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; z-index: 0;"></div>
                             <div style="position: absolute; bottom: -80px; right: -80px; width: 250px; height: 250px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; z-index: 0;"></div>
