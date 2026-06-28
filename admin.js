@@ -1386,13 +1386,17 @@ async function loadActivities() {
         const response = await fetch(`${API_BASE}/activities`);
         let activities = await response.json();
         
-        const dateFilter = document.getElementById('activityDateFilter')?.value;
-        if (dateFilter) {
+        const dateFrom = document.getElementById('activityDateFrom')?.value;
+        const dateTo = document.getElementById('activityDateTo')?.value;
+        
+        if (dateFrom || dateTo) {
             activities = activities.filter(activity => {
                 if (!activity.date) return false;
-                // Compare YYYY-MM-DD
                 const actDate = new Date(activity.date).toISOString().split('T')[0];
-                return actDate === dateFilter;
+                let matches = true;
+                if (dateFrom && actDate < dateFrom) matches = false;
+                if (dateTo && actDate > dateTo) matches = false;
+                return matches;
             });
         }
         
@@ -1400,7 +1404,7 @@ async function loadActivities() {
         tbody.innerHTML = '';
         
         if (activities.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">No activities found.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">No activities found in this date range.</td></tr>';
             return;
         }
 
@@ -1417,10 +1421,11 @@ async function loadActivities() {
                 }
                 
                 let waHtml = '';
-                if (phone) {
+                if (phone && activity.showOnWebsite) {
                     phone = phone.replace(/[^0-9]/g, '');
                     if (phone.length === 10) phone = '91' + phone;
-                    const msg = encodeURIComponent(`Hello! We are thrilled to share that ${w.studentName} has won ${w.place} place in the "${activity.activityName}" activity! Check out their photo on our website: ${websiteUrl}`);
+                    const specificUrl = `${websiteUrl}/index.html#activity-${activity._id}`;
+                    const msg = encodeURIComponent(`Hello! We are thrilled to share that ${w.studentName} has won ${w.place} place in the "${activity.activityName}" activity! Check out their photo on our website: ${specificUrl}`);
                     waHtml = `<a href="https://wa.me/${phone}?text=${msg}" target="_blank" title="Share on WhatsApp" style="margin-left: 8px; color: #25D366; text-decoration: none;"><span class="material-symbols-rounded" style="font-size: 1.2rem; vertical-align: middle;">chat</span></a>`;
                 }
                 
