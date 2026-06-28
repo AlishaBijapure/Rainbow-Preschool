@@ -162,11 +162,11 @@ async function fetchRecentActivity() {
                     activity.winners.forEach(winner => {
                         const photoSrc = winner.studentPhoto || 'assets/images/default-avatar.webp';
                         winnersHtml += `
-                            <div class="winner-card" style="background: white; border-radius: 20px; padding: 25px 20px; text-align: center; width: 220px; box-shadow: 0 15px 30px rgba(0,0,0,0.1); transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                            <div class="winner-card" style="background: white; border-radius: 20px; padding: 25px 30px; text-align: center; min-width: 220px; width: max-content; max-width: 350px; box-shadow: 0 15px 30px rgba(0,0,0,0.1); transition: transform 0.3s ease, box-shadow 0.3s ease;">
                                 <div style="position: relative; width: 130px; height: 130px; margin: 0 auto 20px; border-radius: 50%; overflow: hidden; border: 5px solid #ff6b6b; box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);">
                                     <img src="${photoSrc}" alt="${winner.studentName}" style="width: 100%; height: 100%; object-fit: cover;">
                                 </div>
-                                <h5 style="margin: 0; font-size: 1.3rem; font-weight: 800; color: var(--text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 5px;" title="${escapeHtml(winner.studentName)}">${escapeHtml(winner.studentName)}</h5>
+                                <h5 style="margin: 0; font-size: 1.3rem; font-weight: 800; color: var(--text-dark); white-space: nowrap; padding: 0 5px;">${escapeHtml(winner.studentName)}</h5>
                                 <div style="margin-top: 15px;">
                                     <span class="badge" style="background: var(--yellow); color: var(--text-dark); font-weight: 800; padding: 8px 16px; font-size: 1.1rem; border-radius: 25px; box-shadow: 0 4px 15px rgba(255, 209, 102, 0.6);"><span class="material-symbols-rounded" style="font-size: 1.3rem; vertical-align: middle; margin-right: 5px;">emoji_events</span>${escapeHtml(winner.place)}</span>
                                 </div>
