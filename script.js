@@ -198,6 +198,16 @@ async function fetchRecentActivity() {
                 });
                 
                 section.style.display = 'block';
+
+                // Handle anchor links (since content is loaded asynchronously)
+                if (window.location.hash) {
+                    const targetElement = document.querySelector(window.location.hash);
+                    if (targetElement) {
+                        setTimeout(() => {
+                            targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }, 200); // Slight delay to ensure paint
+                    }
+                }
             }
         }
     } catch (error) {
