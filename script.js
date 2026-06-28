@@ -162,8 +162,8 @@ async function fetchRecentActivity() {
                     activity.winners.forEach(winner => {
                         const photoSrc = winner.studentPhoto || 'assets/images/default-avatar.webp';
                         winnersHtml += `
-                            <div class="winner-card" style="background: white; border-radius: 20px; padding: 25px 30px; text-align: center; min-width: 220px; max-width: 100%; display: inline-block; box-sizing: border-box; box-shadow: 0 15px 30px rgba(0,0,0,0.1); transition: transform 0.3s ease, box-shadow 0.3s ease;">
-                                <div style="position: relative; width: 130px; height: 130px; margin: 0 auto 20px; border-radius: 50%; overflow: hidden; border: 5px solid #ff6b6b; box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);">
+                            <div class="winner-card" style="background: #ffebf0; border-radius: 20px; padding: 25px 30px; text-align: center; min-width: 220px; max-width: 100%; display: inline-block; box-sizing: border-box; box-shadow: 0 15px 30px rgba(0,0,0,0.1); transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                                <div style="position: relative; width: 160px; height: 160px; margin: 0 auto 20px; border-radius: 50%; overflow: hidden; border: 5px solid #000000; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);">
                                     <img src="${photoSrc}" alt="${winner.studentName}" style="width: 100%; height: 100%; object-fit: cover;">
                                 </div>
                                 <h5 style="margin: 0; font-size: 1.3rem; font-weight: 800; color: var(--text-dark); white-space: nowrap; padding: 0 5px;">${escapeHtml(winner.studentName)}</h5>
@@ -175,7 +175,7 @@ async function fetchRecentActivity() {
                     });
 
                     container.innerHTML += `
-                        <div style="background: linear-gradient(135deg, rgba(255, 107, 107, 0.85), rgba(238, 82, 83, 0.85)); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 30px; padding: 40px; text-align: center; box-shadow: 0 15px 40px rgba(238, 82, 83, 0.3); position: relative; overflow: hidden; color: white;">
+                        <div style="background: linear-gradient(135deg, rgba(255, 107, 107, 0.45), rgba(238, 82, 83, 0.45)); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-radius: 30px; padding: 40px; text-align: center; box-shadow: 0 15px 40px rgba(238, 82, 83, 0.15); position: relative; overflow: hidden; color: white;">
                             <!-- Decorative elements -->
                             <div style="position: absolute; top: -50px; left: -50px; width: 200px; height: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; z-index: 0;"></div>
                             <div style="position: absolute; bottom: -80px; right: -80px; width: 250px; height: 250px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; z-index: 0;"></div>
@@ -186,8 +186,8 @@ async function fetchRecentActivity() {
                                 </div>
                                 
                                 <div style="display: inline-block; margin-bottom: 35px; margin-top: 10px;">
-                                    <h4 style="margin: 0 0 10px; font-size: 2.5rem; font-weight: 900; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); letter-spacing: 1px;">${escapeHtml(activity.activityName)}</h4>
-                                    <p style="color: rgba(255, 255, 255, 0.9); font-size: 1.3rem; margin: 0; font-weight: 600;"><span class="material-symbols-rounded" style="color: var(--yellow); vertical-align: middle; margin-right: 8px; font-size: 1.5rem;">celebration</span>Congratulations to our amazing stars!</p>
+                                    <h4 style="margin: 0 0 10px; font-size: 2.5rem; font-weight: 900; color: white; text-shadow: 2px 2px 6px rgba(0,0,0,0.3); letter-spacing: 1px;">${escapeHtml(activity.activityName)}</h4>
+                                    <p style="color: rgba(255, 255, 255, 1); font-size: 1.3rem; margin: 0; font-weight: 600; text-shadow: 1px 1px 4px rgba(0,0,0,0.3);"><span class="material-symbols-rounded" style="color: var(--yellow); vertical-align: middle; margin-right: 8px; font-size: 1.5rem; text-shadow: none;">celebration</span>Congratulations to our amazing stars!</p>
                                 </div>
                                 <div class="winners-grid" style="display: flex; gap: 40px; justify-content: center; flex-wrap: wrap; margin-top: 10px;">
                                     ${winnersHtml}
