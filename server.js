@@ -8,6 +8,7 @@ const compression = require('compression');
 const Student = require('./models/Student');
 const FeeStructure = require('./models/FeeStructure');
 const Enquiry = require('./models/Enquiry');
+const Activity = require('./models/Activity');
 
 const Uniform = require('./models/Uniform');
 
@@ -341,6 +342,57 @@ app.delete('/api/uniforms', async (req, res) => {
         
         await Uniform.deleteOne({ category, itemType, size });
         res.json({ success: true, message: 'Size deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// --- Activities API ---
+
+app.get('/api/activities', async (req, res) => {
+    try {
+        const activities = await Activity.find().sort({ date: -1, createdAt: -1 });
+        res.json(activities);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.get('/api/activities/latest', async (req, res) => {
+    try {
+        const activity = await Activity.findOne().sort({ date: -1, createdAt: -1 });
+        if (!activity) return res.status(404).json({ message: 'No activities found' });
+        res.json(activity);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.post('/api/activities', async (req, res) => {
+    try {
+        const { activityName, date, numberOfWinners, winners } = req.body;
+        if (!activityName || !numberOfWinners || !winners || winners.length === 0) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+        
+        const newActivity = new Activity({
+            activityName,
+            date: date || new Date(),
+            numberOfWinners,
+            winners
+        });
+        
+        await newActivity.save();
+        res.status(201).json(newActivity);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.delete('/api/activities/:id', async (req, res) => {
+    try {
+        await Activity.findByIdAndDelete(req.params.id);
+        res.json({ message: 'Activity deleted successfully' });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

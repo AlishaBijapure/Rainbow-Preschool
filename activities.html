@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activity Winners - Rainbow Preschool</title>
+    <link rel="icon" type="image/webp" href="assets/images/Rainbow Preschool Logo.webp">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css?v=1.2">
+</head>
+<body>
+    <header id="header">
+        <div class="nav-container">
+            <a href="/" class="logo" style="display: flex; align-items: center; gap: 10px;">
+                <img src="assets/images/Rainbow Preschool Logo.webp" alt="Rainbow Preschool Logo" style="height: 40px; width: auto; border-radius: 50%;">
+                <span class="rainbow-text">Rainbow</span> Preschool
+            </a>
+            <button class="mobile-menu-toggle" aria-label="Toggle Menu">
+                <span class="material-symbols-rounded">menu</span>
+            </button>
+            <nav id="nav-links">
+                <a href="/">Home</a>
+                <a href="/#about">About</a>
+                <a href="/#academics">Programs</a>
+                <a href="/#admissions">Admissions</a>
+                <a href="/#parents">Parents</a>
+                <a href="/#infrastructure">Facilities</a>
+                <a href="/#enquiry" class="nav-cta">Enroll Now</a>
+            </nav>
+        </div>
+    </header>
+
+    <main style="padding-top: 100px; min-height: 70vh;">
+        <section class="container text-center">
+            <h1 class="section-title"><span class="rainbow-text">Activity</span> Winners</h1>
+            <p style="margin-bottom: 40px; color: var(--text-light);">Celebrating the little champions of our preschool activities!</p>
+            
+            <div id="allActivitiesContainer" style="display: flex; flex-direction: column; gap: 40px;">
+                <!-- Filled via JS -->
+            </div>
+            
+            <div id="noActivitiesMsg" style="display: none; padding: 50px; background: var(--bg-light); border-radius: 20px;">
+                <span class="material-symbols-rounded text-muted" style="font-size: 3rem;">sentiment_dissatisfied</span>
+                <h4 class="mt-3 text-muted">No activities found yet.</h4>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer pt-5">
+        <div class="container text-center">
+            <p>&copy; 2026 Rainbow Preschool. All rights reserved.</p>
+        </div>
+    </footer>
+    <script src="activities.js"></script>
+</body>
+</html>

@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    fetchRecentActivity();
     // Current Year for Footer
     document.getElementById('year').textContent = new Date().getFullYear();
 
@@ -140,3 +141,40 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// Fetch recent activity for the homepage
+async function fetchRecentActivity() {
+    try {
+        const response = await fetch('/api/activities/latest');
+        if (response.ok) {
+            const activity = await response.json();
+            const section = document.getElementById('recent-activity-section');
+            
+            if (activity && section) {
+                document.getElementById('recentActivityName').textContent = activity.activityName;
+                const dateObj = new Date(activity.date);
+                document.getElementById('recentActivityDate').textContent = dateObj.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+                
+                const winnersContainer = document.getElementById('recentActivityWinners');
+                winnersContainer.innerHTML = '';
+                
+                activity.winners.forEach(winner => {
+                    const photoSrc = winner.studentPhoto || 'assets/images/default-avatar.webp';
+                    winnersContainer.innerHTML += `
+                        <div class="winner-card" style="background: var(--bg-light); border-radius: 15px; padding: 15px; text-align: center; width: 160px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.3s ease;">
+                            <div style="width: 80px; height: 80px; margin: 0 auto 10px; border-radius: 50%; overflow: hidden; border: 3px solid var(--purple);">
+                                <img src="${photoSrc}" alt="${winner.studentName}" style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
+                            <h5 style="margin: 0; font-size: 1.1rem; color: var(--text-dark);">${winner.studentName}</h5>
+                            <span class="badge" style="background: var(--yellow); color: #fff; margin-top: 5px; display: inline-block;">${winner.place}</span>
+                        </div>
+                    `;
+                });
+                
+                section.style.display = 'block';
+            }
+        }
+    } catch (error) {
+        console.error('Error fetching recent activity:', error);
+    }
+}

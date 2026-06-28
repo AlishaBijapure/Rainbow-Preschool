@@ -49,6 +49,7 @@ function initForms() {
     document.getElementById('addStudentForm')?.addEventListener('submit', handleAddStudent);
     document.getElementById('feeCollectionForm')?.addEventListener('submit', handleFeeCollection);
     document.getElementById('addSizeForm')?.addEventListener('submit', handleAddSize);
+    document.getElementById('addActivityForm')?.addEventListener('submit', handleAddActivity);
 
     ['permAddr', 'tempAddr', 'pPAddr', 'pTAddr'].forEach(id => {
         const el = document.getElementById(id);
@@ -96,6 +97,10 @@ function switchTab(tabId) {
     if (tabId === 'enquiries') fetchEnquiries();
     if (tabId === 'uniform' || tabId === 'add-student') loadUniforms();
     if (tabId === 'fee-receipts') loadFeeReceipts();
+    if (tabId === 'activities') {
+        loadActivities();
+        generateWinnerInputs(); // initial load
+    }
 }
 
 function calculateAge() {
@@ -1260,4 +1265,139 @@ function printReceipt() {
     setTimeout(() => {
         document.title = originalTitle;
     }, 1000);
+}
+
+// --- Activities Logic ---
+
+function generateWinnerInputs() {
+    const count = parseInt(document.getElementById('activityWinnersCount').value) || 1;
+    const container = document.getElementById('winnersContainer');
+    
+    // Sort students alphabetically for dropdown
+    const sortedStudents = [...currentStudents].sort((a, b) => a.firstName.localeCompare(b.firstName));
+    
+    let optionsHtml = '<option value="" disabled selected>Select Student</option>';
+    sortedStudents.forEach(s => {
+        optionsHtml += `<option value="${s._id}">${escapeHtml(s.firstName)} ${escapeHtml(s.lastName)} (${s.classAdmitted})</option>`;
+    });
+
+    let html = '';
+    for (let i = 1; i <= count; i++) {
+        html += `
+            <div class="input-group" style="margin-bottom: 15px; border-left: 3px solid var(--purple); padding-left: 10px;">
+                <label>Winner ${i}</label>
+                <div style="display: flex; gap: 10px;">
+                    <select id="winnerStudent_${i}" required style="flex: 2;">
+                        ${optionsHtml}
+                    </select>
+                    <input type="text" id="winnerPlace_${i}" placeholder="Place (e.g., 1st, 2nd, Gold)" required style="flex: 1;">
+                </div>
+            </div>
+        `;
+    }
+    container.innerHTML = html;
+}
+
+async function handleAddActivity(event) {
+    event.preventDefault();
+    
+    const activityName = document.getElementById('activityName').value;
+    const activityDate = document.getElementById('activityDate').value;
+    const count = parseInt(document.getElementById('activityWinnersCount').value) || 1;
+    
+    const winners = [];
+    for (let i = 1; i <= count; i++) {
+        const selectEl = document.getElementById(`winnerStudent_${i}`);
+        const studentId = selectEl.value;
+        const studentName = selectEl.options[selectEl.selectedIndex].text.split(' (')[0];
+        
+        // Find photo
+        const student = currentStudents.find(s => s._id === studentId);
+        const studentPhoto = student ? student.photo : '';
+        
+        const place = document.getElementById(`winnerPlace_${i}`).value;
+        
+        winners.push({
+            studentId,
+            studentName,
+            studentPhoto,
+            place
+        });
+    }
+
+    try {
+        const response = await fetch(`${API_BASE}/activities`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                activityName,
+                date: activityDate,
+                numberOfWinners: count,
+                winners
+            })
+        });
+
+        if (response.ok) {
+            alert('Activity saved successfully!');
+            document.getElementById('addActivityForm').reset();
+            generateWinnerInputs();
+            loadActivities();
+        } else {
+            const err = await response.json();
+            alert('Error: ' + err.error);
+        }
+    } catch (error) {
+        console.error('Error saving activity:', error);
+        alert('Failed to save activity.');
+    }
+}
+
+async function loadActivities() {
+    try {
+        const response = await fetch(`${API_BASE}/activities`);
+        const activities = await response.json();
+        
+        const tbody = document.querySelector('#activitiesTable tbody');
+        tbody.innerHTML = '';
+        
+        if (activities.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">No activities found.</td></tr>';
+            return;
+        }
+
+        activities.forEach(activity => {
+            const dateStr = safeDate(activity.date) ? formatDate(activity.date) : 'N/A';
+            const winnersText = activity.winners.map(w => `${escapeHtml(w.studentName)} (${escapeHtml(w.place)})`).join('<br>');
+            
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${dateStr}</td>
+                <td><strong>${escapeHtml(activity.activityName)}</strong></td>
+                <td>${winnersText}</td>
+                <td>
+                    <button class="btn btn-sm btn-outline" style="color: var(--danger); border-color: var(--danger);" onclick="deleteActivity('${activity._id}')">
+                        <span class="material-symbols-rounded">delete</span>
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    } catch (error) {
+        console.error('Error loading activities:', error);
+    }
+}
+
+async function deleteActivity(id) {
+    if (!confirm('Are you sure you want to delete this activity?')) return;
+    
+    try {
+        const response = await fetch(`${API_BASE}/activities/${id}`, { method: 'DELETE' });
+        if (response.ok) {
+            loadActivities();
+        } else {
+            alert('Failed to delete activity.');
+        }
+    } catch (error) {
+        console.error('Error deleting activity:', error);
+    }
 }
