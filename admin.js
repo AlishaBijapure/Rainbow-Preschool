@@ -1366,7 +1366,8 @@ async function loadActivities() {
         }
 
         activities.forEach(activity => {
-            const dateStr = safeDate(activity.date) ? formatDate(activity.date) : 'N/A';
+            const parsedDate = safeDate(activity.date);
+            const dateStr = parsedDate ? formatDate(parsedDate) : 'N/A';
             const winnersText = activity.winners.map(w => `${escapeHtml(w.studentName)} (${escapeHtml(w.place)})`).join('<br>');
             
             const tr = document.createElement('tr');
