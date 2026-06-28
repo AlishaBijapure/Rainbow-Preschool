@@ -1273,22 +1273,14 @@ function generateWinnerInputs() {
     const count = parseInt(document.getElementById('activityWinnersCount').value) || 1;
     const container = document.getElementById('winnersContainer');
     
-    // Sort students alphabetically for dropdown
-    const sortedStudents = [...currentStudents].sort((a, b) => a.firstName.localeCompare(b.firstName));
-    
-    let optionsHtml = '<option value="" disabled selected>Select Student</option>';
-    sortedStudents.forEach(s => {
-        optionsHtml += `<option value="${s._id}">${escapeHtml(s.firstName)} ${escapeHtml(s.lastName)} (${s.classAdmitted})</option>`;
-    });
-
     let html = '';
     for (let i = 1; i <= count; i++) {
         html += `
             <div class="input-group" style="margin-bottom: 15px; border-left: 3px solid var(--purple); padding-left: 10px;">
                 <label>Winner ${i}</label>
                 <div style="display: flex; gap: 10px;">
-                    <select id="winnerStudent_${i}" required style="flex: 2;">
-                        ${optionsHtml}
+                    <select id="winnerStudent_${i}" class="winner-student-select" required style="flex: 2;">
+                        <!-- populated via updateWinnerOptions -->
                     </select>
                     <input type="text" id="winnerPlace_${i}" placeholder="Place (e.g., 1st, 2nd, Gold)" required style="flex: 1;">
                 </div>
@@ -1296,6 +1288,43 @@ function generateWinnerInputs() {
         `;
     }
     container.innerHTML = html;
+    updateWinnerOptions();
+}
+
+function updateWinnerOptions() {
+    const classFilter = document.getElementById('activityClassFilter')?.value || '';
+    const nameFilter = document.getElementById('activityNameSearch')?.value.toLowerCase() || '';
+
+    // Filter students
+    let filteredStudents = currentStudents;
+    if (classFilter) {
+        filteredStudents = filteredStudents.filter(s => s.classAdmitted === classFilter);
+    }
+    if (nameFilter) {
+        filteredStudents = filteredStudents.filter(s => 
+            s.firstName.toLowerCase().includes(nameFilter) || 
+            s.lastName.toLowerCase().includes(nameFilter)
+        );
+    }
+
+    // Sort alphabetically
+    filteredStudents.sort((a, b) => a.firstName.localeCompare(b.firstName));
+
+    let optionsHtml = '<option value="" disabled selected>Select Student</option>';
+    filteredStudents.forEach(s => {
+        optionsHtml += `<option value="${s._id}">${escapeHtml(s.firstName)} ${escapeHtml(s.lastName)} (${s.classAdmitted})</option>`;
+    });
+
+    // Update all winner selects while preserving their current value if possible
+    const selects = document.querySelectorAll('.winner-student-select');
+    selects.forEach(select => {
+        const currentValue = select.value;
+        select.innerHTML = optionsHtml;
+        // Restore value if it exists in the new options
+        if (currentValue && Array.from(select.options).some(opt => opt.value === currentValue)) {
+            select.value = currentValue;
+        }
+    });
 }
 
 async function handleAddActivity(event) {

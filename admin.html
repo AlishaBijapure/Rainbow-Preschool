@@ -425,6 +425,27 @@
                                 <input type="number" id="activityWinnersCount" min="1" value="1" required onchange="generateWinnerInputs()">
                             </div>
                         </div>
+                        
+                        <div style="background: var(--bg-light); padding: 15px; border-radius: 10px; margin-top: 20px;">
+                            <h4 style="margin-bottom: 10px; color: var(--purple);">Filter Students</h4>
+                            <div class="form-grid-2">
+                                <div class="input-group">
+                                    <label>By Class</label>
+                                    <select id="activityClassFilter" onchange="updateWinnerOptions()">
+                                        <option value="">All Classes</option>
+                                        <option value="Playgroup">Playgroup</option>
+                                        <option value="Nursery">Nursery</option>
+                                        <option value="LKG">LKG</option>
+                                        <option value="UKG">UKG</option>
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <label>By Name</label>
+                                    <input type="text" id="activityNameSearch" placeholder="Search by name..." oninput="updateWinnerOptions()">
+                                </div>
+                            </div>
+                        </div>
+
                         <div id="winnersContainer" style="margin-top: 15px;">
                             <!-- Dynamically populated via JS based on numberOfWinners -->
                         </div>
@@ -701,6 +722,6 @@
         </div>
     </div>
 
-    <script src="admin.js?v=2.8"></script>
+    <script src="admin.js?v=2.9"></script>
 </body>
 </html>
