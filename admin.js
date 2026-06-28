@@ -1384,20 +1384,48 @@ async function handleAddActivity(event) {
 async function loadActivities() {
     try {
         const response = await fetch(`${API_BASE}/activities`);
-        const activities = await response.json();
+        let activities = await response.json();
+        
+        const dateFilter = document.getElementById('activityDateFilter')?.value;
+        if (dateFilter) {
+            activities = activities.filter(activity => {
+                if (!activity.date) return false;
+                // Compare YYYY-MM-DD
+                const actDate = new Date(activity.date).toISOString().split('T')[0];
+                return actDate === dateFilter;
+            });
+        }
         
         const tbody = document.querySelector('#activitiesTable tbody');
         tbody.innerHTML = '';
         
         if (activities.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">No activities found.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">No activities found.</td></tr>';
             return;
         }
 
         activities.forEach(activity => {
             const parsedDate = safeDate(activity.date);
             const dateStr = parsedDate ? formatDate(parsedDate) : 'N/A';
-            const winnersText = activity.winners.map(w => `${escapeHtml(w.studentName)} (${escapeHtml(w.place)})`).join('<br>');
+            const websiteUrl = window.location.origin;
+            
+            const winnersText = activity.winners.map(w => {
+                let phone = '';
+                const student = currentStudents.find(s => s._id === w.studentId);
+                if (student) {
+                    phone = student.motherDetails?.phone || student.fatherDetails?.phone || '';
+                }
+                
+                let waHtml = '';
+                if (phone) {
+                    phone = phone.replace(/[^0-9]/g, '');
+                    if (phone.length === 10) phone = '91' + phone;
+                    const msg = encodeURIComponent(`Hello! We are thrilled to share that ${w.studentName} has won ${w.place} place in the "${activity.activityName}" activity! Check out their photo on our website: ${websiteUrl}`);
+                    waHtml = `<a href="https://wa.me/${phone}?text=${msg}" target="_blank" title="Share on WhatsApp" style="margin-left: 8px; color: #25D366; text-decoration: none;"><span class="material-symbols-rounded" style="font-size: 1.2rem; vertical-align: middle;">chat</span></a>`;
+                }
+                
+                return `<div style="margin-bottom: 4px;">${escapeHtml(w.studentName)} (${escapeHtml(w.place)})${waHtml}</div>`;
+            }).join('');
             
             const tr = document.createElement('tr');
             tr.innerHTML = `

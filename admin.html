@@ -454,7 +454,13 @@
                 </div>
 
                 <div class="card mt-4">
-                    <h3>Previous Activities</h3>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3 style="margin: 0;">Previous Activities</h3>
+                        <div class="input-group" style="width: auto; margin-bottom: 0;">
+                            <label style="display: inline-block; margin-right: 10px; margin-bottom: 0;">Filter by Date:</label>
+                            <input type="date" id="activityDateFilter" onchange="loadActivities()" style="display: inline-block; width: auto; margin-bottom: 0;">
+                        </div>
+                    </div>
                     <div class="table-responsive">
                         <table id="activitiesTable">
                             <thead>
@@ -722,6 +728,6 @@
         </div>
     </div>
 
-    <script src="admin.js?v=2.9"></script>
+    <script src="admin.js?v=2.10"></script>
 </body>
 </html>
