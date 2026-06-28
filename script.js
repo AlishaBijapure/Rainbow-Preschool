@@ -162,30 +162,34 @@ async function fetchRecentActivity() {
                     activity.winners.forEach(winner => {
                         const photoSrc = winner.studentPhoto || 'assets/images/default-avatar.webp';
                         winnersHtml += `
-                            <div class="winner-card" style="background: linear-gradient(145deg, #ffffff, #f0f0f0); border-radius: 20px; padding: 20px; text-align: center; width: 180px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); transition: transform 0.3s ease, box-shadow 0.3s ease;">
-                                <div style="position: relative; width: 90px; height: 90px; margin: 0 auto 15px; border-radius: 50%; overflow: hidden; border: 4px solid var(--purple); box-shadow: 0 5px 15px rgba(157, 113, 232, 0.3);">
+                            <div class="winner-card" style="background: white; border-radius: 20px; padding: 25px 20px; text-align: center; width: 220px; box-shadow: 0 15px 30px rgba(0,0,0,0.1); transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                                <div style="position: relative; width: 130px; height: 130px; margin: 0 auto 20px; border-radius: 50%; overflow: hidden; border: 5px solid #ff6b6b; box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);">
                                     <img src="${photoSrc}" alt="${winner.studentName}" style="width: 100%; height: 100%; object-fit: cover;">
                                 </div>
-                                <h5 style="margin: 0; font-size: 1.15rem; font-weight: 700; color: var(--text-dark);">${escapeHtml(winner.studentName)}</h5>
-                                <div style="margin-top: 10px;">
-                                    <span class="badge" style="background: var(--yellow); color: var(--text-dark); font-weight: bold; padding: 6px 12px; font-size: 0.95rem; border-radius: 20px; box-shadow: 0 3px 10px rgba(255, 209, 102, 0.4);"><span class="material-symbols-rounded" style="font-size: 1.1rem; vertical-align: middle; margin-right: 4px;">emoji_events</span>${escapeHtml(winner.place)}</span>
+                                <h5 style="margin: 0; font-size: 1.3rem; font-weight: 800; color: var(--text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 5px;" title="${escapeHtml(winner.studentName)}">${escapeHtml(winner.studentName)}</h5>
+                                <div style="margin-top: 15px;">
+                                    <span class="badge" style="background: var(--yellow); color: var(--text-dark); font-weight: 800; padding: 8px 16px; font-size: 1.1rem; border-radius: 25px; box-shadow: 0 4px 15px rgba(255, 209, 102, 0.6);"><span class="material-symbols-rounded" style="font-size: 1.3rem; vertical-align: middle; margin-right: 5px;">emoji_events</span>${escapeHtml(winner.place)}</span>
                                 </div>
                             </div>
                         `;
                     });
 
                     container.innerHTML += `
-                        <div style="background: white; border-radius: 25px; padding: 30px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.05); position: relative; overflow: hidden;">
-                            <!-- Decorative blob -->
-                            <div style="position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: rgba(255, 209, 102, 0.2); border-radius: 50%; z-index: 0;"></div>
+                        <div style="background: linear-gradient(135deg, #ff6b6b, #ee5253); border-radius: 30px; padding: 40px; text-align: center; box-shadow: 0 15px 40px rgba(238, 82, 83, 0.3); position: relative; overflow: hidden; color: white;">
+                            <!-- Decorative elements -->
+                            <div style="position: absolute; top: -50px; left: -50px; width: 200px; height: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; z-index: 0;"></div>
+                            <div style="position: absolute; bottom: -80px; right: -80px; width: 250px; height: 250px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; z-index: 0;"></div>
                             
                             <div style="position: relative; z-index: 1;">
-                                <div style="display: inline-block; margin-bottom: 25px;">
-                                    <span class="badge" style="background: rgba(157, 113, 232, 0.1); color: var(--purple); font-size: 0.95rem; padding: 8px 20px; border-radius: 25px; font-weight: 600;">${dateStr}</span>
-                                    <h4 style="margin: 15px 0 5px; font-size: 1.8rem; font-weight: 800; color: var(--text-dark);">${escapeHtml(activity.activityName)}</h4>
-                                    <p style="color: var(--text-light); font-size: 1.1rem; margin: 0;"><span class="material-symbols-rounded" style="color: var(--pink); vertical-align: middle; margin-right: 5px;">celebration</span><strong>Congratulations</strong> to our amazing stars!</p>
+                                <div style="position: absolute; top: 0; right: 0;">
+                                    <span style="background: rgba(255, 255, 255, 0.2); color: white; font-size: 0.9rem; padding: 6px 15px; border-radius: 20px; font-weight: 600; backdrop-filter: blur(5px);">${dateStr}</span>
                                 </div>
-                                <div class="winners-grid" style="display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; margin-top: 10px;">
+                                
+                                <div style="display: inline-block; margin-bottom: 35px; margin-top: 10px;">
+                                    <h4 style="margin: 0 0 10px; font-size: 2.5rem; font-weight: 900; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); letter-spacing: 1px;">${escapeHtml(activity.activityName)}</h4>
+                                    <p style="color: rgba(255, 255, 255, 0.9); font-size: 1.3rem; margin: 0; font-weight: 600;"><span class="material-symbols-rounded" style="color: var(--yellow); vertical-align: middle; margin-right: 8px; font-size: 1.5rem;">celebration</span>Congratulations to our amazing stars!</p>
+                                </div>
+                                <div class="winners-grid" style="display: flex; gap: 40px; justify-content: center; flex-wrap: wrap; margin-top: 10px;">
                                     ${winnersHtml}
                                 </div>
                             </div>
