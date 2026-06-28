@@ -358,11 +358,10 @@ app.get('/api/activities', async (req, res) => {
     }
 });
 
-app.get('/api/activities/latest', async (req, res) => {
+app.get('/api/activities/featured', async (req, res) => {
     try {
-        const activity = await Activity.findOne().sort({ date: -1, createdAt: -1 });
-        if (!activity) return res.status(404).json({ message: 'No activities found' });
-        res.json(activity);
+        const activities = await Activity.find({ showOnWebsite: true }).sort({ date: -1, createdAt: -1 });
+        res.json(activities);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -393,6 +392,18 @@ app.delete('/api/activities/:id', async (req, res) => {
     try {
         await Activity.findByIdAndDelete(req.params.id);
         res.json({ message: 'Activity deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.patch('/api/activities/:id/toggle', async (req, res) => {
+    try {
+        const activity = await Activity.findById(req.params.id);
+        if (!activity) return res.status(404).json({ message: 'Activity not found' });
+        activity.showOnWebsite = !activity.showOnWebsite;
+        await activity.save();
+        res.json(activity);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

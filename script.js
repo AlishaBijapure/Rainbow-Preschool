@@ -145,28 +145,42 @@ document.addEventListener('DOMContentLoaded', () => {
 // Fetch recent activity for the homepage
 async function fetchRecentActivity() {
     try {
-        const response = await fetch('/api/activities/latest');
+        const response = await fetch('/api/activities/featured');
         if (response.ok) {
-            const activity = await response.json();
+            const activities = await response.json();
             const section = document.getElementById('recent-activity-section');
+            const container = document.getElementById('featuredActivitiesContainer');
             
-            if (activity && section) {
-                document.getElementById('recentActivityName').textContent = activity.activityName;
-                const dateObj = new Date(activity.date);
-                document.getElementById('recentActivityDate').textContent = dateObj.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-                
-                const winnersContainer = document.getElementById('recentActivityWinners');
-                winnersContainer.innerHTML = '';
-                
-                activity.winners.forEach(winner => {
-                    const photoSrc = winner.studentPhoto || 'assets/images/default-avatar.webp';
-                    winnersContainer.innerHTML += `
-                        <div class="winner-card" style="background: var(--bg-light); border-radius: 15px; padding: 15px; text-align: center; width: 160px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.3s ease;">
-                            <div style="width: 80px; height: 80px; margin: 0 auto 10px; border-radius: 50%; overflow: hidden; border: 3px solid var(--purple);">
-                                <img src="${photoSrc}" alt="${winner.studentName}" style="width: 100%; height: 100%; object-fit: cover;">
+            if (activities && activities.length > 0 && section && container) {
+                container.innerHTML = ''; // Clear container
+
+                activities.forEach(activity => {
+                    const dateObj = new Date(activity.date);
+                    const dateStr = dateObj.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+                    
+                    let winnersHtml = '';
+                    activity.winners.forEach(winner => {
+                        const photoSrc = winner.studentPhoto || 'assets/images/default-avatar.webp';
+                        winnersHtml += `
+                            <div class="winner-card" style="background: white; border-radius: 15px; padding: 15px; text-align: center; width: 160px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.3s ease;">
+                                <div style="width: 80px; height: 80px; margin: 0 auto 10px; border-radius: 50%; overflow: hidden; border: 3px solid var(--purple);">
+                                    <img src="${photoSrc}" alt="${winner.studentName}" style="width: 100%; height: 100%; object-fit: cover;">
+                                </div>
+                                <h5 style="margin: 0; font-size: 1.1rem; color: var(--text-dark);">${winner.studentName}</h5>
+                                <span class="badge" style="background: var(--yellow); color: #fff; margin-top: 5px; display: inline-block;">${winner.place}</span>
                             </div>
-                            <h5 style="margin: 0; font-size: 1.1rem; color: var(--text-dark);">${winner.studentName}</h5>
-                            <span class="badge" style="background: var(--yellow); color: #fff; margin-top: 5px; display: inline-block;">${winner.place}</span>
+                        `;
+                    });
+
+                    container.innerHTML += `
+                        <div style="background: rgba(157, 113, 232, 0.05); border-radius: 20px; padding: 20px; text-align: left;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid rgba(157, 113, 232, 0.2); padding-bottom: 10px; margin-bottom: 20px;">
+                                <h4 style="margin: 0; font-weight: 700; color: var(--text-dark);">${escapeHtml(activity.activityName)}</h4>
+                                <span class="badge" style="background: rgba(157, 113, 232, 0.1); color: var(--purple); font-size: 0.9rem; padding: 5px 15px; border-radius: 20px;">${dateStr}</span>
+                            </div>
+                            <div class="winners-grid" style="display: flex; gap: 20px; justify-content: flex-start; flex-wrap: wrap;">
+                                ${winnersHtml}
+                            </div>
                         </div>
                     `;
                 });
@@ -177,4 +191,15 @@ async function fetchRecentActivity() {
     } catch (error) {
         console.error('Error fetching recent activity:', error);
     }
+}
+
+// Utility to escape HTML and prevent XSS
+function escapeHtml(unsafe) {
+    if (!unsafe) return '';
+    return unsafe
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
 }

@@ -9,7 +9,8 @@ const activitySchema = new mongoose.Schema({
         studentName: { type: String, required: true },
         studentPhoto: { type: String },
         place: { type: String, required: true } // e.g., '1st', '2nd', '3rd', 'Consolation'
-    }]
+    }],
+    showOnWebsite: { type: Boolean, default: false }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Activity', activitySchema);

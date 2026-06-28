@@ -1375,6 +1375,14 @@ async function loadActivities() {
                 <td><strong>${escapeHtml(activity.activityName)}</strong></td>
                 <td>${winnersText}</td>
                 <td>
+                    <label class="switch" style="position: relative; display: inline-block; width: 40px; height: 20px;">
+                        <input type="checkbox" ${activity.showOnWebsite ? 'checked' : ''} onchange="toggleActivityVisibility('${activity._id}')" style="opacity: 0; width: 0; height: 0;">
+                        <span class="slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: ${activity.showOnWebsite ? 'var(--purple)' : '#ccc'}; transition: .4s; border-radius: 20px;">
+                            <span style="position: absolute; content: ''; height: 16px; width: 16px; left: ${activity.showOnWebsite ? '22px' : '2px'}; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%;"></span>
+                        </span>
+                    </label>
+                </td>
+                <td>
                     <button class="btn btn-sm btn-outline" style="color: var(--danger); border-color: var(--danger);" onclick="deleteActivity('${activity._id}')">
                         <span class="material-symbols-rounded">delete</span>
                     </button>
@@ -1384,6 +1392,19 @@ async function loadActivities() {
         });
     } catch (error) {
         console.error('Error loading activities:', error);
+    }
+}
+
+async function toggleActivityVisibility(id) {
+    try {
+        const response = await fetch(`${API_BASE}/activities/${id}/toggle`, { method: 'PATCH' });
+        if (response.ok) {
+            loadActivities();
+        } else {
+            alert('Failed to toggle visibility.');
+        }
+    } catch (error) {
+        console.error('Error toggling activity visibility:', error);
     }
 }
 
