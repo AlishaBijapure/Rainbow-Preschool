@@ -1831,6 +1831,18 @@ section {
     box-shadow: 0 6px 15px rgba(0, 166, 153, 0.3);
 }
 
+.activity-place-badge {
+    background: var(--yellow);
+    color: var(--text-dark);
+    font-weight: 800;
+    padding: 8px 18px;
+    font-size: 1.1rem;
+    border-radius: 25px;
+    box-shadow: 0 4px 15px rgba(255, 209, 102, 0.5);
+    border: 3px solid #FF5A5F; /* Nice red border */
+    display: inline-block;
+}
+
 @media (max-width: 768px) {
     .activity-winner-name {
         font-size: 1rem;
@@ -1843,5 +1855,9 @@ section {
     .activity-congrats-text {
         font-size: 0.9rem; /* Scaled down for mobile */
         padding: 6px 16px;
+    }
+    .activity-place-badge {
+        font-size: 0.9rem;
+        padding: 6px 14px;
     }
 }

@@ -171,7 +171,7 @@ async function fetchRecentActivity() {
                                     <h5 class="activity-winner-name">${escapeHtml(winner.studentName)}</h5>
                                 </div>
                                 <div>
-                                    <span class="badge" style="background: var(--yellow); color: var(--text-dark); font-weight: 800; padding: 8px 18px; font-size: 1.1rem; border-radius: 25px; box-shadow: 0 4px 15px rgba(255, 209, 102, 0.5);"><span class="material-symbols-rounded" style="font-size: 1.3rem; vertical-align: middle; margin-right: 5px;">emoji_events</span>${escapeHtml(winner.place)}</span>
+                                    <span class="badge activity-place-badge"><span class="material-symbols-rounded" style="font-size: 1.3rem; vertical-align: middle; margin-right: 5px;">emoji_events</span>${escapeHtml(winner.place)}</span>
                                 </div>
                             </div>
                         `;
