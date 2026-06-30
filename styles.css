@@ -1425,6 +1425,19 @@ section {
         object-fit: contain !important; /* Preserves original image ratios without cropping */
     }
 
+    /* About section blackboard mobile responsiveness */
+    .about-content {
+        padding: 40px 20px !important;
+        background-image: none !important;
+        background-color: #1b3d2f !important; /* Classroom blackboard green */
+        border: 6px solid #8b5a2b !important; /* Wooden frame */
+        border-radius: 12px !important;
+        margin-top: 0 !important;
+    }
+    .about-block {
+        max-width: 100% !important;
+    }
+
     .mobile-menu-toggle {
         display: block;
     }
