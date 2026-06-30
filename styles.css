@@ -1427,13 +1427,13 @@ section {
 
     /* About section blackboard text mobile adjustments */
     .about-content {
-        width: 120% !important; /* 1.2 times broader */
-        margin-left: -10% !important; /* Center the broader board */
         padding: 125px 30px 110px !important; /* Increased vertical padding to make board even longer */
         min-height: 650px !important; /* Force board to be 1.3x longer again */
         align-items: flex-start !important;
         text-align: left !important;
         justify-content: center !important; /* Keep content vertically centered within the taller board */
+        background-size: 120% 100% !important; /* Make the board 1.2x broader horizontally */
+        background-position: center !important;
     }
     .about-block {
         max-width: 100% !important;
