@@ -50,6 +50,8 @@ function initForms() {
     document.getElementById('feeCollectionForm')?.addEventListener('submit', handleFeeCollection);
     document.getElementById('addSizeForm')?.addEventListener('submit', handleAddSize);
     document.getElementById('addActivityForm')?.addEventListener('submit', handleAddActivity);
+    document.getElementById('celebrationForm')?.addEventListener('submit', handleAddCelebration);
+    document.getElementById('editCelebrationForm')?.addEventListener('submit', handleEditCelebration);
 
     ['permAddr', 'tempAddr', 'pPAddr', 'pTAddr'].forEach(id => {
         const el = document.getElementById(id);
@@ -100,6 +102,9 @@ function switchTab(tabId) {
     if (tabId === 'activities') {
         loadActivities();
         generateWinnerInputs(); // initial load
+    }
+    if (tabId === 'celebrations') {
+        loadCelebrations();
     }
 }
 
@@ -1534,5 +1539,347 @@ async function deleteActivity(id) {
         }
     } catch (error) {
         console.error('Error deleting activity:', error);
+    }
+}
+
+// --- Celebrations Management ---
+
+let celebrationPhotosBase64 = [];
+
+document.getElementById('celebPhotos')?.addEventListener('change', async (e) => {
+    const files = Array.from(e.target.files);
+    const previewContainer = document.getElementById('celebPhotoPreview');
+    previewContainer.innerHTML = '';
+    celebrationPhotosBase64 = [];
+    
+    if (files.length > 20) {
+        alert('You can only select up to 20 photos at a time.');
+        e.target.value = '';
+        return;
+    }
+
+    for (const file of files) {
+        if (!file.type.startsWith('image/')) continue;
+        try {
+            const base64 = await resizeImageToMedium(file);
+            celebrationPhotosBase64.push(base64);
+            
+            const img = document.createElement('img');
+            img.src = base64;
+            img.style.width = '80px';
+            img.style.height = '80px';
+            img.style.objectFit = 'cover';
+            img.style.borderRadius = '8px';
+            previewContainer.appendChild(img);
+        } catch (err) {
+            console.error('Error resizing image:', err);
+        }
+    }
+});
+
+function resizeImageToMedium(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                let width = img.width;
+                let height = img.height;
+                const maxDim = 800; // max dimension
+
+                if (width > maxDim || height > maxDim) {
+                    if (width > height) {
+                        height = Math.round((height *= maxDim / width));
+                        width = maxDim;
+                    } else {
+                        width = Math.round((width *= maxDim / height));
+                        height = maxDim;
+                    }
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+                resolve(canvas.toDataURL('image/jpeg', 0.8));
+            };
+            img.onerror = reject;
+            img.src = e.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+
+async function handleAddCelebration(e) {
+    e.preventDefault();
+    
+    if (celebrationPhotosBase64.length === 0) {
+        alert('Please add at least one photo.');
+        return;
+    }
+    
+    const payload = {
+        name: document.getElementById('celebName').value,
+        about: document.getElementById('celebAbout').value,
+        date: document.getElementById('celebDate').value,
+        photos: celebrationPhotosBase64
+    };
+
+    try {
+        const res = await fetch(`${API_BASE}/celebrations`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+            alert('Celebration added successfully!');
+            e.target.reset();
+            document.getElementById('celebPhotoPreview').innerHTML = '';
+            celebrationPhotosBase64 = [];
+            loadCelebrations();
+        } else {
+            const data = await res.json();
+            alert(data.error || 'Failed to add celebration');
+        }
+    } catch (err) {
+        console.error(err);
+        alert('An error occurred.');
+    }
+}
+
+async function loadCelebrations() {
+    try {
+        const res = await fetch(`${API_BASE}/celebrations`);
+        const celebrations = await res.json();
+        
+        const tbody = document.querySelector('#celebrationsTable tbody');
+        if (!tbody) return;
+        
+        tbody.innerHTML = '';
+        
+        celebrations.forEach(celeb => {
+            const dateStr = new Date(celeb.date).toLocaleDateString();
+            const photoCount = celeb.photos ? celeb.photos.length : 0;
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${dateStr}</td>
+                <td>${celeb.name}</td>
+                <td>${photoCount} photo(s)</td>
+                <td>
+                    <button class="btn btn-outline" style="padding: 5px 10px; margin-right: 5px;" onclick="openEditCelebrationModal('${celeb._id}')">Edit</button>
+                    <button class="btn btn-danger" style="padding: 5px 10px;" onclick="deleteCelebration('${celeb._id}')">Delete</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+async function deleteCelebration(id) {
+    if (!confirm('Are you sure you want to delete this celebration?')) return;
+    
+    try {
+        const res = await fetch(`${API_BASE}/celebrations/${id}`, { method: 'DELETE' });
+        if (res.ok) {
+            loadCelebrations();
+        } else {
+            alert('Failed to delete celebration');
+        }
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+// --- Edit Celebration Logic ---
+let editCelebrationPhotosBase64 = [];
+let allCelebrationsData = []; // To cache the data when we load it
+
+// Override loadCelebrations to also cache the data
+const originalLoadCelebrations = loadCelebrations;
+loadCelebrations = async function() {
+    try {
+        const res = await fetch(`${API_BASE}/celebrations`);
+        allCelebrationsData = await res.json();
+        
+        const tbody = document.querySelector('#celebrationsTable tbody');
+        if (!tbody) return;
+        
+        tbody.innerHTML = '';
+        
+        // Sort to ensure the most recent is first
+        allCelebrationsData.sort((a, b) => new Date(b.date) - new Date(a.date));
+        
+        allCelebrationsData.forEach((celeb, index) => {
+            const dateStr = new Date(celeb.date).toLocaleDateString();
+            const photoCount = celeb.photos ? celeb.photos.length : 0;
+            const isMostRecent = index === 0;
+            
+            let whatsappBtn = '';
+            if (isMostRecent) {
+                const specificUrl = `${window.location.origin}/index.html#celebrations`;
+                const msgText = `Hello Parents! We have a new update! Please check out our recent celebrations directly on our website here: ${specificUrl}`;
+                
+                whatsappBtn = `<button class="btn" style="padding: 5px 10px; margin-right: 5px; background: #607d8b; color: white; border: none; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;" onclick="copyCelebrationShareText('${encodeURIComponent(msgText)}')">
+                    <span class="material-symbols-rounded" style="font-size: 1.1rem; vertical-align: middle;">content_copy</span>
+                    Copy Share Text
+                </button>`;
+            }
+            
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${dateStr}</td>
+                <td>${celeb.name}</td>
+                <td>${photoCount} photo(s)</td>
+                <td>
+                    ${whatsappBtn}
+                    <button class="btn btn-outline" style="padding: 5px 10px; margin-right: 5px;" onclick="openEditCelebrationModal('${celeb._id}')">Edit</button>
+                    <button class="btn btn-danger" style="padding: 5px 10px;" onclick="deleteCelebration('${celeb._id}')">Delete</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    } catch (err) {
+        console.error(err);
+    }
+};
+
+window.copyCelebrationShareText = function(encodedMsg) {
+    const text = decodeURIComponent(encodedMsg);
+    navigator.clipboard.writeText(text).then(() => {
+        alert('Share text copied to clipboard! You can now paste it into WhatsApp.');
+    }).catch(err => {
+        console.error('Failed to copy text: ', err);
+        alert('Failed to copy text. Please try selecting and copying manually.');
+    });
+};
+
+function openEditCelebrationModal(id) {
+    const celeb = allCelebrationsData.find(c => c._id === id);
+    if (!celeb) return;
+    
+    document.getElementById('editCelebId').value = celeb._id;
+    document.getElementById('editCelebName').value = celeb.name;
+    document.getElementById('editCelebAbout').value = celeb.about;
+    document.getElementById('editCelebDate').value = celeb.date ? new Date(celeb.date).toISOString().split('T')[0] : '';
+    
+    editCelebrationPhotosBase64 = [...(celeb.photos || [])];
+    document.getElementById('editCelebNewPhotos').value = '';
+    document.getElementById('editCelebNewPhotosPreview').innerHTML = '';
+    
+    renderEditCelebrationPhotos();
+    
+    document.getElementById('editCelebrationModal').classList.add('show');
+}
+
+function renderEditCelebrationPhotos() {
+    const container = document.getElementById('editCelebExistingPhotos');
+    container.innerHTML = '';
+    
+    editCelebrationPhotosBase64.forEach((photo, index) => {
+        const wrapper = document.createElement('div');
+        wrapper.style.position = 'relative';
+        wrapper.style.display = 'inline-block';
+        
+        const img = document.createElement('img');
+        img.src = photo;
+        img.style.width = '80px';
+        img.style.height = '80px';
+        img.style.objectFit = 'cover';
+        img.style.borderRadius = '8px';
+        
+        const deleteBtn = document.createElement('span');
+        deleteBtn.innerHTML = '&times;';
+        deleteBtn.style.position = 'absolute';
+        deleteBtn.style.top = '-5px';
+        deleteBtn.style.right = '-5px';
+        deleteBtn.style.background = 'red';
+        deleteBtn.style.color = 'white';
+        deleteBtn.style.borderRadius = '50%';
+        deleteBtn.style.width = '20px';
+        deleteBtn.style.height = '20px';
+        deleteBtn.style.display = 'flex';
+        deleteBtn.style.alignItems = 'center';
+        deleteBtn.style.justifyContent = 'center';
+        deleteBtn.style.cursor = 'pointer';
+        deleteBtn.style.fontSize = '14px';
+        deleteBtn.style.fontWeight = 'bold';
+        
+        deleteBtn.onclick = () => {
+            editCelebrationPhotosBase64.splice(index, 1);
+            renderEditCelebrationPhotos();
+        };
+        
+        wrapper.appendChild(img);
+        wrapper.appendChild(deleteBtn);
+        container.appendChild(wrapper);
+    });
+}
+
+document.getElementById('editCelebNewPhotos')?.addEventListener('change', async (e) => {
+    const files = Array.from(e.target.files);
+    
+    if (editCelebrationPhotosBase64.length + files.length > 20) {
+        alert(`You can only have up to 20 photos total. You currently have ${editCelebrationPhotosBase64.length}.`);
+        e.target.value = '';
+        return;
+    }
+
+    const previewContainer = document.getElementById('editCelebNewPhotosPreview');
+    previewContainer.innerHTML = '<i>Processing new images...</i>';
+    
+    for (const file of files) {
+        if (!file.type.startsWith('image/')) continue;
+        try {
+            const base64 = await resizeImageToMedium(file);
+            editCelebrationPhotosBase64.push(base64);
+        } catch (err) {
+            console.error('Error resizing image:', err);
+        }
+    }
+    
+    previewContainer.innerHTML = '';
+    e.target.value = ''; // Reset file input so they don't get appended twice if they don't submit yet
+    renderEditCelebrationPhotos(); // Just render them alongside existing ones
+});
+
+async function handleEditCelebration(e) {
+    e.preventDefault();
+    
+    if (editCelebrationPhotosBase64.length === 0) {
+        alert('Please keep at least one photo.');
+        return;
+    }
+    
+    const id = document.getElementById('editCelebId').value;
+    const payload = {
+        name: document.getElementById('editCelebName').value,
+        about: document.getElementById('editCelebAbout').value,
+        date: document.getElementById('editCelebDate').value,
+        photos: editCelebrationPhotosBase64
+    };
+
+    try {
+        const res = await fetch(`${API_BASE}/celebrations/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+            alert('Celebration updated successfully!');
+            closeModal('editCelebrationModal');
+            loadCelebrations();
+        } else {
+            const data = await res.json();
+            alert(data.error || 'Failed to update celebration');
+        }
+    } catch (err) {
+        console.error(err);
+        alert('An error occurred while updating.');
     }
 }

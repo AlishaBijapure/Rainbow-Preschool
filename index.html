@@ -61,7 +61,7 @@
         rel="stylesheet" />
 
 
-    <link rel="stylesheet" href="styles.css?v=1.2">
+    <link rel="stylesheet" href="styles.css?v=7.8">
 </head>
 
 <body>
@@ -90,12 +90,12 @@
     <main>
         <!-- 1. Hero Section -->
         <section id="home" class="hero">
+            <!-- Double logo layering for smooth transition: back is z-index 1, front is z-index 4 -->
+            <img src="assets/images/Rainbow Preschool Logo.webp" alt="Rainbow Preschool Logo" class="hero-logo-bg hero-logo-back">
+            <img src="assets/images/Rainbow Preschool Logo.webp" alt="Rainbow Preschool Logo" class="hero-logo-bg hero-logo-front">
+            <img src="assets/images/—Pngtree—floating realistic clouds_8623463.png" alt="Floating Clouds Decoration" class="hero-cloud-decor">
             <div class="hero-wrapper">
-                <h1 class="hero-title">
-                    <span class="rainbow-word">Rainbow</span> <br>
-                    <span class="preschool-word">Preschool</span>
-                </h1>
-                <p>A colourful, safe, and happy place for your child to grow, learn, and discover the world.</p>
+                <p>A <span class="text-pink">colourful</span>, <span class="text-blue">safe</span>, and <span class="text-green">happy</span> place for your child to grow, learn, and discover the world.</p>
                 <div class="hero-buttons">
                     <a href="#admissions" class="btn btn-primary">Schedule a Visit</a>
                     <a href="#about" class="btn btn-secondary">Learn More</a>
@@ -107,7 +107,7 @@
         <!-- USP Section -->
         <section id="usp" class="usp-section">
             <div class="container">
-                <h2 class="section-title">Why Choose Us?</h2>
+                <h2 class="section-title pencil-bg-title">Why Choose Us?</h2>
                 <div class="grid-3">
                     <div class="card usp-card color-blue">
                         <span class="material-symbols-rounded icon">palette</span>
@@ -132,25 +132,27 @@
         <!-- 2. About Us -->
         <section id="about" class="about-section">
             <div class="container">
+                <h2 class="section-title pencil-bg-title">Nurturing Little Minds</h2>
                 <div class="two-col align-center">
                     <div class="about-images">
                         <!-- Placeholders for images -->
                         <img src="assets/images/parrots.webp" alt="Kids Playing" class="tall-box"
                             style="width: 100%; object-fit: cover; border-radius: var(--radius-lg); box-shadow: var(--shadow-card);">
                     </div>
-                    <div class="about-content">
-                        <h2 class="section-title text-left">Nurturing Little Minds</h2>
-                        <div class="about-block">
-                            <h3><span class="material-symbols-rounded icon-small">emoji_objects</span> Mission & Vision
-                            </h3>
-                            <p>To foster a lifelong love for learning in a secure, engaging environment, helping
-                                students develop emotionally, socially, and cognitively.</p>
-                        </div>
-                        <div class="about-block">
-                            <h3><span class="material-symbols-rounded icon-small">record_voice_over</span> Founder's
-                                Message</h3>
-                            <p><em>"Our goal is to be a second home for your child. We believe in building strong
-                                    foundations through joy, curiosity, and compassion."</em> – Principal</p>
+                    <div class="about-content-wrapper">
+                        <div class="about-content">
+                            <div class="about-block">
+                                <h3><span class="material-symbols-rounded icon-small">emoji_objects</span> Mission & Vision
+                                </h3>
+                                <p>To foster a lifelong love for learning in a secure, engaging environment, helping
+                                    students develop emotionally, socially, and cognitively.</p>
+                            </div>
+                            <div class="about-block">
+                                <h3><span class="material-symbols-rounded icon-small">record_voice_over</span> Founder's
+                                    Message</h3>
+                                <p><em>"Our goal is to be a second home for your child. We believe in building strong
+                                        foundations through joy, curiosity, and compassion."</em> – Principal</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -162,7 +164,7 @@
         <!-- 3. Academics & Programs -->
         <section id="academics" class="academics-section bg-light">
             <div class="container">
-                <h2 class="section-title">Our Programs</h2>
+                <h2 class="section-title pencil-bg-title">Our Programs</h2>
                 <p class="section-subtitle">Tailored learning experiences for every stage of early childhood.</p>
                 <div class="grid-4">
                     <div class="card program-card color-pink">
@@ -209,7 +211,7 @@
                     </div>
                 </div>
                 <div id="recent-activity-section" class="recent-activity-container mt-5" style="display: none;">
-                    <h3 class="text-center section-title"><span class="rainbow-text">Featured</span> Activities</h3>
+                    <h3 class="text-center section-title pencil-bg-title"><span class="rainbow-text">Featured</span> Activities</h3>
                     
                     <div id="featuredActivitiesContainer" style="display: flex; flex-direction: column; gap: 30px; margin-bottom: 30px;">
                         <!-- Featured activities injected dynamically -->
@@ -225,10 +227,44 @@
 
         </section>
 
+        <!-- Celebrations Section -->
+        <section id="celebrations" class="celebrations-section">
+            <div class="container">
+                <h2 class="section-title text-center pencil-bg-title"><span class="rainbow-text">Recent</span> Celebrations</h2>
+            </div>
+                
+            <div class="celebration-showcase">
+                    <div class="celebration-carousel-container">
+                        <button class="gallery-arrow prev-arrow" id="celebPrevBtn" onclick="scrollCelebGallery(-1)">
+                            <span class="material-symbols-rounded">chevron_left</span>
+                        </button>
+                        <div class="celebration-carousel" id="celebCarousel">
+                            <!-- Injected via JS -->
+                        </div>
+                        <button class="gallery-arrow next-arrow" id="celebNextBtn" onclick="scrollCelebGallery(1)">
+                            <span class="material-symbols-rounded">chevron_right</span>
+                        </button>
+                    </div>
+                    
+                    <div class="celebration-content">
+                        <h3 id="celebTitle"><span class="material-symbols-rounded icon-mini text-pink">favorite</span> Loading...</h3>
+                        <div class="celeb-desc-container" style="position: relative; flex: 1; display: flex; flex-direction: column; overflow: hidden; margin-bottom: 20px;">
+                            <div class="scroll-arrow scroll-arrow-up" id="celebScrollUp" style="display: none; position: absolute; top: 5px; left: 50%; transform: translateX(-50%); z-index: 10; background: rgba(255,255,255,0.9); border-radius: 50%; width: 32px; height: 32px; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); color: var(--primary); pointer-events: none; animation: bounceUp 1.2s infinite;"><span class="material-symbols-rounded" style="font-size: 20px;">keyboard_arrow_up</span></div>
+                            <p id="celebDesc" style="margin-bottom: 0;">Loading celebration details...</p>
+                            <div class="scroll-arrow scroll-arrow-down" id="celebScrollDown" style="display: none; position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%); z-index: 10; background: rgba(255,255,255,0.9); border-radius: 50%; width: 32px; height: 32px; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); color: var(--primary); pointer-events: none; animation: bounceDown 1.2s infinite;"><span class="material-symbols-rounded" style="font-size: 20px;">keyboard_arrow_down</span></div>
+                        </div>
+                        
+                        <a href="celebrations.html" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px; width: 100%; justify-content: center; flex-shrink: 0;">
+                            <span class="material-symbols-rounded">celebration</span> View Previous Celebrations
+                        </a>
+                    </div>
+                </div>
+        </section>
+
         <!-- Instagram Feed Section -->
         <section id="instagram-feed" class="instagram-section">
             <div class="container text-center">
-                <h2 class="section-title">Follow Our Activities</h2>
+                <h2 class="section-title pencil-bg-title">Follow Our Activities</h2>
                 <!-- Elfsight Instagram Feed | Untitled Instagram Feed -->
                 <script src="https://elfsightcdn.com/platform.js" async></script>
                 <div class="elfsight-app-374672b1-2b5f-4f7d-991a-d2a28c08a103" data-elfsight-app-lazy></div>
@@ -307,6 +343,46 @@
             function scrollGallery(direction) {
                 const carousel = document.getElementById('galleryCarousel');
                 const scrollAmount = carousel.offsetWidth * 0.7;
+                carousel.scrollBy({ left: scrollAmount * direction, behavior: 'smooth' });
+            }
+
+            // Celebrations Carousel logic
+            document.addEventListener('DOMContentLoaded', () => {
+                const celebCarousel = document.getElementById('celebCarousel');
+                const celebPrevBtn = document.getElementById('celebPrevBtn');
+                const celebNextBtn = document.getElementById('celebNextBtn');
+
+                if (celebCarousel && celebPrevBtn && celebNextBtn) {
+                    const updateCelebArrows = () => {
+                        const scrollLeft = celebCarousel.scrollLeft;
+                        const maxScroll = celebCarousel.scrollWidth - celebCarousel.clientWidth;
+
+                        if (scrollLeft <= 5) {
+                            celebPrevBtn.style.opacity = '0';
+                            celebPrevBtn.style.pointerEvents = 'none';
+                        } else {
+                            celebPrevBtn.style.opacity = '1';
+                            celebPrevBtn.style.pointerEvents = 'auto';
+                        }
+
+                        if (scrollLeft >= maxScroll - 5) {
+                            celebNextBtn.style.opacity = '0';
+                            celebNextBtn.style.pointerEvents = 'none';
+                        } else {
+                            celebNextBtn.style.opacity = '1';
+                            celebNextBtn.style.pointerEvents = 'auto';
+                        }
+                    };
+
+                    celebCarousel.addEventListener('scroll', updateCelebArrows);
+                    window.addEventListener('resize', updateCelebArrows);
+                    setTimeout(updateCelebArrows, 100);
+                }
+            });
+
+            function scrollCelebGallery(direction) {
+                const carousel = document.getElementById('celebCarousel');
+                const scrollAmount = carousel.offsetWidth * 0.9;
                 carousel.scrollBy({ left: scrollAmount * direction, behavior: 'smooth' });
             }
         </script>
@@ -494,7 +570,7 @@
         </div>
     </footer>
 
-    <script src="script.js?v=1.9"></script>
+    <script src="script.js?v=3.0"></script>
 
 </body>
 

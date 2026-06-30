@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     fetchRecentActivity();
+    fetchLatestCelebration();
     // Current Year for Footer
     document.getElementById('year').textContent = new Date().getFullYear();
 
@@ -161,33 +162,35 @@ async function fetchRecentActivity() {
                     let winnersHtml = '';
                     activity.winners.forEach(winner => {
                         const photoSrc = winner.studentPhoto || 'assets/images/default-avatar.webp';
-                        winnersHtml += `
-                            <div class="winner-card" style="background: #ffebf0; border-radius: 20px; padding: 25px 30px; text-align: center; min-width: 220px; max-width: 100%; display: inline-block; box-sizing: border-box; box-shadow: 0 15px 30px rgba(0,0,0,0.1); transition: transform 0.3s ease, box-shadow 0.3s ease;">
-                                <div style="position: relative; width: 160px; height: 160px; margin: 0 auto 20px; border-radius: 50%; overflow: hidden; border: 5px solid #000000; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);">
+                         winnersHtml += `
+                            <div class="winner-card" style="background: transparent; border-radius: 0; padding: 15px; text-align: center; min-width: 280px; max-width: 100%; display: inline-block; box-sizing: border-box; box-shadow: none; transition: transform 0.3s ease;">
+                                <div style="position: relative; width: 250px; height: 250px; margin: 0 auto 20px; border-radius: 28px; overflow: hidden; border: 6px solid #FFD166; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);">
                                     <img src="${photoSrc}" alt="${winner.studentName}" style="width: 100%; height: 100%; object-fit: cover;">
                                 </div>
-                                <h5 style="margin: 0; font-size: 1.3rem; font-weight: 800; color: var(--text-dark); white-space: nowrap; padding: 0 5px;">${escapeHtml(winner.studentName)}</h5>
-                                <div style="margin-top: 15px;">
-                                    <span class="badge" style="background: var(--yellow); color: var(--text-dark); font-weight: 800; padding: 8px 16px; font-size: 1.1rem; border-radius: 25px; box-shadow: 0 4px 15px rgba(255, 209, 102, 0.6);"><span class="material-symbols-rounded" style="font-size: 1.3rem; vertical-align: middle; margin-right: 5px;">emoji_events</span>${escapeHtml(winner.place)}</span>
+                                <div style="margin-bottom: 12px;">
+                                    <h5 style="margin: 0; font-size: 1.4rem; font-weight: 800; color: #1E293B; background: #FFFFFF; border-radius: 16px; padding: 6px 18px; display: inline-block; box-shadow: 0 6px 15px rgba(0,0,0,0.15); border: 2.5px solid #FFD166; white-space: nowrap;">${escapeHtml(winner.studentName)}</h5>
+                                </div>
+                                <div>
+                                    <span class="badge" style="background: var(--yellow); color: var(--text-dark); font-weight: 800; padding: 8px 18px; font-size: 1.1rem; border-radius: 25px; box-shadow: 0 4px 15px rgba(255, 209, 102, 0.5);"><span class="material-symbols-rounded" style="font-size: 1.3rem; vertical-align: middle; margin-right: 5px;">emoji_events</span>${escapeHtml(winner.place)}</span>
                                 </div>
                             </div>
                         `;
                     });
 
                     container.innerHTML += `
-                        <div id="activity-${activity._id}" style="background: linear-gradient(135deg, rgba(255, 107, 107, 0.45), rgba(238, 82, 83, 0.45)); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-radius: 30px; padding: 40px; text-align: center; box-shadow: 0 15px 40px rgba(238, 82, 83, 0.15); position: relative; overflow: hidden; color: white; margin-bottom: 30px;">
+                        <div id="activity-${activity._id}" style="background: linear-gradient(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.12)), url('assets/images/activitybg.jpg') center/cover no-repeat fixed; border-radius: 30px; padding: 50px 40px; text-align: center; box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15); position: relative; overflow: hidden; color: white; margin-bottom: 30px;">
                             <!-- Decorative elements -->
                             <div style="position: absolute; top: -50px; left: -50px; width: 200px; height: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; z-index: 0;"></div>
                             <div style="position: absolute; bottom: -80px; right: -80px; width: 250px; height: 250px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; z-index: 0;"></div>
                             
                             <div style="position: relative; z-index: 1;">
                                 <div style="position: absolute; top: 0; right: 0;">
-                                    <span style="background: rgba(255, 255, 255, 0.2); color: white; font-size: 0.9rem; padding: 6px 15px; border-radius: 20px; font-weight: 600; backdrop-filter: blur(5px);">${dateStr}</span>
+                                    <span style="background: rgba(15, 23, 42, 0.85); color: #FFFFFF; font-size: 0.95rem; padding: 8px 18px; border-radius: 20px; font-weight: 700; border: 1.5px solid rgba(255, 255, 255, 0.2);">${dateStr}</span>
                                 </div>
                                 
-                                <div style="display: inline-block; margin-bottom: 35px; margin-top: 10px;">
-                                    <h4 style="margin: 0 0 10px; font-size: 2.5rem; font-weight: 900; color: white; text-shadow: 2px 2px 6px rgba(0,0,0,0.3); letter-spacing: 1px;">${escapeHtml(activity.activityName)}</h4>
-                                    <p style="color: rgba(255, 255, 255, 1); font-size: 1.3rem; margin: 0; font-weight: 600; text-shadow: 1px 1px 4px rgba(0,0,0,0.3);"><span class="material-symbols-rounded" style="color: var(--yellow); vertical-align: middle; margin-right: 8px; font-size: 1.5rem; text-shadow: none;">celebration</span>Congratulations to our amazing stars!</p>
+                                <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 35px; margin-top: 10px; gap: 15px;">
+                                    <h4 style="margin: 0; font-size: 2.6rem; font-weight: 900; color: #FFFFFF; background: linear-gradient(135deg, #FF5A5F 0%, #FF7B9C 100%); border-radius: 25px; padding: 12px 35px; display: inline-block; box-shadow: 0 8px 25px rgba(255, 90, 95, 0.4); border: 3px solid #FFFFFF; letter-spacing: 1px; text-shadow: 1px 1px 3px rgba(0,0,0,0.2);">${escapeHtml(activity.activityName)}</h4>
+                                     <p style="color: #FFFFFF; font-size: 1.3rem; margin: 0; font-weight: 700; background: #00A699; border-radius: 30px; padding: 8px 24px; display: inline-block; border: 2.5px solid #FFFFFF; box-shadow: 0 6px 15px rgba(0, 166, 153, 0.3);"><span class="material-symbols-rounded" style="color: #FFD166; vertical-align: middle; margin-right: 8px; font-size: 1.5rem; text-shadow: none;">celebration</span>Congratulations to our amazing stars!</p>
                                 </div>
                                 <div class="winners-grid" style="display: flex; gap: 40px; justify-content: center; flex-wrap: wrap; margin-top: 10px;">
                                     ${winnersHtml}
@@ -210,9 +213,98 @@ async function fetchRecentActivity() {
                 }
             }
         }
-    } catch (error) {
-        console.error('Error fetching recent activity:', error);
+    } catch (err) {
+        console.error('Error fetching recent activities:', err);
     }
+}
+
+async function fetchLatestCelebration() {
+    try {
+        const res = await fetch('/api/celebrations/latest');
+        const section = document.getElementById('celebrations');
+        
+        if (!res.ok) {
+            if (section) section.style.display = 'none';
+            return;
+        }
+        
+        const celeb = await res.json();
+        
+        const titleEl = document.getElementById('celebTitle');
+        const descEl = document.getElementById('celebDesc');
+        const carousel = document.getElementById('celebCarousel');
+        
+        if (titleEl) titleEl.innerHTML = `<span class="material-symbols-rounded icon-mini text-pink">favorite</span> ${celeb.name}`;
+        if (descEl) descEl.textContent = celeb.about;
+        
+        if (carousel && celeb.photos && celeb.photos.length > 0) {
+            carousel.innerHTML = '';
+            celeb.photos.forEach((photoUrl, index) => {
+                const img = document.createElement('img');
+                img.src = photoUrl;
+                img.alt = `${celeb.name} photo ${index + 1}`;
+                img.loading = 'lazy';
+                carousel.appendChild(img);
+            });
+            
+            // Dispatch events after rendering to recalculate carousel scroll state and show arrows
+            setTimeout(() => {
+                carousel.dispatchEvent(new Event('scroll'));
+                window.dispatchEvent(new Event('resize'));
+            }, 300);
+        }
+        if (section) {
+            section.style.display = 'block';
+            initCelebScrollIndicators();
+        }
+    } catch (err) {
+        console.error('Error fetching latest celebration:', err);
+        const section = document.getElementById('celebrations');
+        if (section) section.style.display = 'none';
+    }
+}
+
+function initCelebScrollIndicators() {
+    const desc = document.getElementById('celebDesc');
+    const upArrow = document.getElementById('celebScrollUp');
+    const downArrow = document.getElementById('celebScrollDown');
+    
+    if (!desc || !upArrow || !downArrow) return;
+    
+    function checkScroll() {
+        const canScroll = desc.scrollHeight > desc.clientHeight;
+        if (!canScroll) {
+            upArrow.style.display = 'none';
+            downArrow.style.display = 'none';
+            return;
+        }
+        
+        // Show up arrow if we have scrolled down a bit
+        if (desc.scrollTop > 10) {
+            upArrow.style.display = 'flex';
+        } else {
+            upArrow.style.display = 'none';
+        }
+        
+        // Show down arrow if we are not at the bottom
+        const isAtBottom = Math.ceil(desc.scrollTop + desc.clientHeight) >= desc.scrollHeight - 5;
+        if (!isAtBottom) {
+            downArrow.style.display = 'flex';
+        } else {
+            downArrow.style.display = 'none';
+        }
+    }
+    
+    desc.addEventListener('scroll', checkScroll);
+    
+    // Check when DOM reflows or container sizes change
+    if (window.ResizeObserver) {
+        new ResizeObserver(checkScroll).observe(desc);
+    }
+    window.addEventListener('resize', checkScroll);
+    
+    // Initial check
+    setTimeout(checkScroll, 300);
 }
 
 // Utility to escape HTML and prevent XSS

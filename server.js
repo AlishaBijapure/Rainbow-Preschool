@@ -9,6 +9,7 @@ const Student = require('./models/Student');
 const FeeStructure = require('./models/FeeStructure');
 const Enquiry = require('./models/Enquiry');
 const Activity = require('./models/Activity');
+const Celebration = require('./models/Celebration');
 
 const Uniform = require('./models/Uniform');
 
@@ -45,8 +46,8 @@ async function seedUniforms() {
 const app = express();
 app.use(compression());
 app.use(cors());
-app.use(express.json({ limit: '5mb' }));
-app.use(express.urlencoded({ limit: '5mb', extended: true }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // Serve static files from the root directory
 app.use(express.static(path.join(__dirname, '/'), {
@@ -409,12 +410,97 @@ app.patch('/api/activities/:id/toggle', async (req, res) => {
     }
 });
 
+
+const PORT = process.env.PORT || 3000;
+// --- Celebrations API ---
+
+app.get('/api/celebrations', async (req, res) => {
+    try {
+        const celebrations = await Celebration.find().sort({ date: -1, createdAt: -1 });
+        res.json(celebrations);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.get('/api/celebrations/latest', async (req, res) => {
+    try {
+        const latestCelebration = await Celebration.findOne().sort({ date: -1, createdAt: -1 });
+        if (!latestCelebration) {
+            return res.status(404).json({ message: 'No celebrations found' });
+        }
+        res.json(latestCelebration);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.post('/api/celebrations', async (req, res) => {
+    try {
+        const { name, about, date, photos } = req.body;
+        if (!name || !about || !photos || photos.length === 0) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+        
+        if (photos.length > 20) {
+            return res.status(400).json({ error: 'Maximum of 20 photos allowed' });
+        }
+        
+        const newCelebration = new Celebration({
+            name,
+            about,
+            date: date || new Date(),
+            photos
+        });
+        
+        await newCelebration.save();
+        res.status(201).json(newCelebration);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.delete('/api/celebrations/:id', async (req, res) => {
+    try {
+        await Celebration.findByIdAndDelete(req.params.id);
+        res.json({ message: 'Celebration deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.put('/api/celebrations/:id', async (req, res) => {
+    try {
+        const { name, about, date, photos } = req.body;
+        if (!name || !about || !photos || photos.length === 0) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+        
+        if (photos.length > 20) {
+            return res.status(400).json({ error: 'Maximum of 20 photos allowed' });
+        }
+
+        const updatedCelebration = await Celebration.findByIdAndUpdate(
+            req.params.id,
+            { name, about, date, photos },
+            { new: true }
+        );
+
+        if (!updatedCelebration) {
+            return res.status(404).json({ error: 'Celebration not found' });
+        }
+
+        res.json(updatedCelebration);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // Fallback route to serve index.html for unknown routes (SPA behavior if needed)
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
