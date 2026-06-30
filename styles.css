@@ -1412,6 +1412,10 @@ section {
         background-attachment: scroll !important;
     }
 
+    .grid-3 {
+        grid-template-columns: 1fr; /* Fixes horizontal overflow from 400px min-width */
+    }
+
     .celebration-carousel-container {
         width: 100% !important;
         margin: 20px auto 0 !important;
@@ -1427,12 +1431,12 @@ section {
 
     /* About section blackboard text mobile adjustments */
     .about-content {
-        padding: 160px 30px 320px !important; /* Heavy bottom padding makes the board much longer vertically */
-        min-height: unset !important;
+        padding: 125px 30px 110px !important; /* Increased vertical padding to make board even longer */
+        min-height: 650px !important; /* Force board to be 1.3x longer again */
         align-items: flex-start !important;
         text-align: left !important;
-        justify-content: flex-start !important; /* Locks text position relative to top, preventing it from moving down */
-        background-size: 100% 100% !important; /* Reset width to standard */
+        justify-content: center !important; /* Keep content vertically centered within the taller board */
+        background-size: 120% 100% !important; /* Make the board 1.2x broader horizontally */
         background-position: center !important;
     }
     .about-block {
