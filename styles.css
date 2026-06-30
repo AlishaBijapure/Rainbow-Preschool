@@ -1783,3 +1783,65 @@ section {
     0%, 100% { transform: translateY(-50%) translateX(0); }
     50% { transform: translateY(-50%) translateX(5px); }
 }
+
+/* Featured Activities dynamic styling extracted from script.js */
+.activity-winner-name {
+    margin: 0; 
+    font-size: 1.4rem; 
+    font-weight: 800; 
+    color: #1E293B; 
+    background: #FFFFFF; 
+    border-radius: 16px; 
+    padding: 6px 18px; 
+    display: inline-block; 
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15); 
+    border: 2.5px solid #FFD166; 
+    white-space: nowrap;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-sizing: border-box;
+}
+
+.activity-title-box {
+    margin: 0; 
+    font-size: 2.6rem; 
+    font-weight: 900; 
+    color: #FFFFFF; 
+    background: linear-gradient(135deg, #FF5A5F 0%, #FF7B9C 100%); 
+    border-radius: 25px; 
+    padding: 12px 35px; 
+    display: inline-block; 
+    box-shadow: 0 8px 25px rgba(255, 90, 95, 0.4); 
+    border: 3px solid #FFFFFF; 
+    letter-spacing: 1px; 
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+}
+
+.activity-congrats-text {
+    color: #FFFFFF; 
+    font-size: 1.3rem; 
+    margin: 0; 
+    font-weight: 700; 
+    background: #00A699; 
+    border-radius: 30px; 
+    padding: 8px 24px; 
+    display: inline-block; 
+    border: 2.5px solid #FFFFFF; 
+    box-shadow: 0 6px 15px rgba(0, 166, 153, 0.3);
+}
+
+@media (max-width: 768px) {
+    .activity-winner-name {
+        font-size: 1rem;
+        padding: 6px 12px;
+    }
+    .activity-title-box {
+        font-size: 1.1rem; /* Scaled down for mobile */
+        padding: 8px 20px;
+    }
+    .activity-congrats-text {
+        font-size: 0.9rem; /* Scaled down for mobile */
+        padding: 6px 16px;
+    }
+}

@@ -168,7 +168,7 @@ async function fetchRecentActivity() {
                                     <img src="${photoSrc}" alt="${winner.studentName}" style="width: 100%; height: 100%; object-fit: cover;">
                                 </div>
                                 <div style="margin-bottom: 12px;">
-                                    <h5 style="margin: 0; font-size: 1.4rem; font-weight: 800; color: #1E293B; background: #FFFFFF; border-radius: 16px; padding: 6px 18px; display: inline-block; box-shadow: 0 6px 15px rgba(0,0,0,0.15); border: 2.5px solid #FFD166; white-space: nowrap;">${escapeHtml(winner.studentName)}</h5>
+                                    <h5 class="activity-winner-name">${escapeHtml(winner.studentName)}</h5>
                                 </div>
                                 <div>
                                     <span class="badge" style="background: var(--yellow); color: var(--text-dark); font-weight: 800; padding: 8px 18px; font-size: 1.1rem; border-radius: 25px; box-shadow: 0 4px 15px rgba(255, 209, 102, 0.5);"><span class="material-symbols-rounded" style="font-size: 1.3rem; vertical-align: middle; margin-right: 5px;">emoji_events</span>${escapeHtml(winner.place)}</span>
@@ -189,8 +189,8 @@ async function fetchRecentActivity() {
                                 </div>
                                 
                                 <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 35px; margin-top: 10px; gap: 15px;">
-                                    <h4 style="margin: 0; font-size: 2.6rem; font-weight: 900; color: #FFFFFF; background: linear-gradient(135deg, #FF5A5F 0%, #FF7B9C 100%); border-radius: 25px; padding: 12px 35px; display: inline-block; box-shadow: 0 8px 25px rgba(255, 90, 95, 0.4); border: 3px solid #FFFFFF; letter-spacing: 1px; text-shadow: 1px 1px 3px rgba(0,0,0,0.2);">${escapeHtml(activity.activityName)}</h4>
-                                     <p style="color: #FFFFFF; font-size: 1.3rem; margin: 0; font-weight: 700; background: #00A699; border-radius: 30px; padding: 8px 24px; display: inline-block; border: 2.5px solid #FFFFFF; box-shadow: 0 6px 15px rgba(0, 166, 153, 0.3);"><span class="material-symbols-rounded" style="color: #FFD166; vertical-align: middle; margin-right: 8px; font-size: 1.5rem; text-shadow: none;">celebration</span>Congratulations to our amazing stars!</p>
+                                    <h4 class="activity-title-box">${escapeHtml(activity.activityName)}</h4>
+                                     <p class="activity-congrats-text"><span class="material-symbols-rounded" style="color: #FFD166; vertical-align: middle; margin-right: 8px; font-size: 1.5rem; text-shadow: none;">celebration</span>Congratulations to our amazing stars!</p>
                                 </div>
                                 <div class="winners-grid" style="display: flex; gap: 40px; justify-content: center; flex-wrap: wrap; margin-top: 10px;">
                                     ${winnersHtml}
