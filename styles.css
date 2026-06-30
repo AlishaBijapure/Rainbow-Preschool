@@ -1427,18 +1427,20 @@ section {
 
     /* About section blackboard text mobile adjustments */
     .about-content {
-        padding: 70px 30px 65px !important; /* Balanced vertical padding to keep it inside the frame */
-        align-items: center !important;
-        text-align: center !important;
+        padding: 95px 30px 85px !important; /* Increased vertical padding to make board longer */
+        min-height: 500px !important; /* Force board to be 1.3x longer */
+        align-items: flex-start !important;
+        text-align: left !important;
+        justify-content: center !important; /* Keep content vertically centered within the taller board */
     }
     .about-block {
         max-width: 100% !important;
         display: flex;
         flex-direction: column;
-        align-items: center;
+        align-items: flex-start !important;
     }
     .about-block h3 {
-        justify-content: center !important; /* Center the icon + heading row */
+        justify-content: flex-start !important; /* Left-align the icon + heading row */
     }
 
     .mobile-menu-toggle {
