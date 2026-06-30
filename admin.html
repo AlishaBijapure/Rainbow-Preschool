@@ -12,6 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet" />
     
     <link rel="icon" type="image/webp" href="assets/images/Rainbow Preschool Logo.webp">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
     <link rel="stylesheet" href="admin.css?v=2.5">
 </head>
 <body>
@@ -730,6 +731,22 @@
         </div>
     </div>
 
+    <!-- Modal for Image Cropping -->
+    <div id="cropModal" class="modal">
+        <div class="modal-content card" style="max-width: 600px; width: 90%;">
+            <span class="close-modal" onclick="closeModal('cropModal')">&times;</span>
+            <h2 style="margin-bottom: 20px;">Crop Photo</h2>
+            <div class="img-container" style="max-height: 400px; overflow: hidden; margin-bottom: 20px;">
+                <img id="imageToCrop" src="" alt="Picture" style="max-width: 100%;">
+            </div>
+            <div style="text-align: right;">
+                <button type="button" class="btn btn-outline" onclick="closeModal('cropModal')">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="cropImage()">Crop & Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     <script src="admin.js?v=2.12"></script>
 </body>
 </html>

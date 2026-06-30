@@ -149,14 +149,7 @@ async function previewPhoto(event, targetId, isProfile = false) {
     try {
         const base64 = await readAsBase64(file);
         if (isProfile) {
-            profilePhotoBase64 = base64;
-            const img = document.getElementById('pPhotoImg');
-            const placeholder = document.getElementById('pPhotoPlaceholder');
-            if (img && placeholder) {
-                img.src = base64;
-                img.style.display = 'block';
-                placeholder.style.display = 'none';
-            }
+            openCropModal(base64, true);
         } else {
             studentPhotoBase64 = base64;
             const container = document.getElementById(targetId);
@@ -177,6 +170,58 @@ function readAsBase64(file) {
         reader.onerror = reject;
         reader.readAsDataURL(file);
     });
+}
+
+let cropper = null;
+let currentCropTarget = null;
+
+function openCropModal(base64, isProfileTarget) {
+    currentCropTarget = isProfileTarget;
+    const imageToCrop = document.getElementById('imageToCrop');
+    imageToCrop.src = base64;
+    document.getElementById('cropModal').classList.add('show');
+    
+    if (cropper) {
+        cropper.destroy();
+    }
+    
+    // We need a slight delay for the modal to display properly before initializing cropper
+    setTimeout(() => {
+        cropper = new Cropper(imageToCrop, {
+            aspectRatio: 1,
+            viewMode: 1,
+            autoCropArea: 1,
+        });
+    }, 100);
+}
+
+function cropImage() {
+    if (!cropper) return;
+    const canvas = cropper.getCroppedCanvas({
+        width: 300,
+        height: 300
+    });
+    
+    const croppedBase64 = canvas.toDataURL('image/jpeg', 0.8);
+    
+    if (currentCropTarget) {
+        profilePhotoBase64 = croppedBase64;
+        const img = document.getElementById('pPhotoImg');
+        const placeholder = document.getElementById('pPhotoPlaceholder');
+        if (img && placeholder) {
+            img.src = croppedBase64;
+            img.style.display = 'block';
+            placeholder.style.display = 'none';
+        }
+    } else {
+        studentPhotoBase64 = croppedBase64;
+        const container = document.getElementById('sPhotoWrapper');
+        if (container) {
+            container.innerHTML = `<img src="${croppedBase64}" style="width: 100%; height: 100%; object-fit: cover;">`;
+        }
+    }
+    
+    closeModal('cropModal');
 }
 
 function getActiveYear() {
@@ -390,7 +435,12 @@ function applyFilters() {
         tr.addEventListener('click', () => openProfileModal(student));
 
         tr.innerHTML = `
-            <td><strong>${escapeHtml(student.firstName)} ${escapeHtml(student.lastName)}</strong></td>
+            <td>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    ${student.photo ? `<img src="${student.photo}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">` : `<div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(157, 113, 232, 0.1); display: flex; align-items: center; justify-content: center; color: var(--purple); font-weight: bold;">${escapeHtml(student.firstName).charAt(0)}${escapeHtml(student.lastName).charAt(0)}</div>`}
+                    <strong>${escapeHtml(student.firstName)} ${escapeHtml(student.lastName)}</strong>
+                </div>
+            </td>
             <td>${escapeHtml(student.classAdmitted)}</td>
             <td>${formatDate(dob)} <span class="small-note">${age}</span></td>
             <td><span class="amount-positive">${formatCurrency(totalPaid)}</span></td>
