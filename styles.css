@@ -1414,11 +1414,11 @@ section {
 
     /* Celebrations section mobile layout adjustments */
     .celebration-carousel-container {
-        width: 50% !important;
+        width: 80% !important;
         margin: 20px auto 0 !important;
         min-height: unset !important;
         height: auto !important;
-        aspect-ratio: 1 / 1 !important;
+        aspect-ratio: 4 / 3 !important;
     }
     .celebration-carousel img {
         width: 100% !important;
