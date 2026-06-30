@@ -486,6 +486,7 @@ function openFeeModal(studentId, studentName, balance) {
     document.getElementById('fcStudentId').value = studentId;
     document.getElementById('feeModalStudentInfo').textContent = `Recording payment for ${studentName}. Remaining Balance: ${formatCurrency(balance)}`;
     document.getElementById('fcAmount').value = balance > 0 ? balance : 0;
+    document.getElementById('fcPayer').value = studentName;
     document.getElementById('fcDate').value = new Date().toISOString().split('T')[0];
     document.getElementById('feeModal')?.classList.add('show');
 }
