@@ -1425,17 +1425,12 @@ section {
         object-fit: contain !important; /* Preserves original image ratios without cropping */
     }
 
-    /* About section blackboard mobile responsiveness */
+    /* About section blackboard text mobile adjustments */
     .about-content {
-        padding: 40px 20px !important;
-        background-image: none !important;
-        background-color: #1b3d2f !important; /* Classroom blackboard green */
-        border: 6px solid #8b5a2b !important; /* Wooden frame */
-        border-radius: 12px !important;
-        margin-top: 0 !important;
+        padding: 80px 30px 60px !important; /* Reduce large desktop padding to fit mobile screens */
     }
     .about-block {
-        max-width: 100% !important;
+        max-width: 100% !important; /* Allow text to occupy full width of container */
     }
 
     .mobile-menu-toggle {
