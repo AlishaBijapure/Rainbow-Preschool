@@ -184,11 +184,10 @@ async function fetchRecentActivity() {
                             <div style="position: absolute; bottom: -80px; right: -80px; width: 250px; height: 250px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; z-index: 0;"></div>
                             
                             <div style="position: relative; z-index: 1;">
-                                <div style="position: absolute; top: 0; right: 0;">
-                                    <span style="background: rgba(15, 23, 42, 0.85); color: #FFFFFF; font-size: 0.95rem; padding: 8px 18px; border-radius: 20px; font-weight: 700; border: 1.5px solid rgba(255, 255, 255, 0.2);">${dateStr}</span>
-                                </div>
-                                
-                                <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 35px; margin-top: 10px; gap: 15px;">
+                                <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 35px; gap: 15px;">
+                                    <div style="margin-bottom: 5px;">
+                                        <span style="background: rgba(15, 23, 42, 0.85); color: #FFFFFF; font-size: 0.95rem; padding: 8px 18px; border-radius: 20px; font-weight: 700; border: 1.5px solid rgba(255, 255, 255, 0.2);">${dateStr}</span>
+                                    </div>
                                     <h4 class="activity-title-box">${escapeHtml(activity.activityName)}</h4>
                                      <p class="activity-congrats-text"><span class="material-symbols-rounded" style="color: #FFD166; vertical-align: middle; margin-right: 8px; font-size: 1.5rem; text-shadow: none;">celebration</span>Congratulations to our amazing stars!</p>
                                 </div>
