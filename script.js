@@ -178,7 +178,7 @@ async function fetchRecentActivity() {
                     });
 
                     container.innerHTML += `
-                        <div id="activity-${activity._id}" style="background: linear-gradient(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.12)), url('assets/images/activitybg.jpg') center/cover no-repeat fixed; border-radius: 30px; padding: 50px 40px; text-align: center; box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15); position: relative; overflow: hidden; color: white; margin-bottom: 30px;">
+                        <div id="activity-${activity._id}" style="background: linear-gradient(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.12)), url('assets/images/activitybg.webp') center/cover no-repeat fixed; border-radius: 30px; padding: 50px 40px; text-align: center; box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15); position: relative; overflow: hidden; color: white; margin-bottom: 30px;">
                             <!-- Decorative elements -->
                             <div style="position: absolute; top: -50px; left: -50px; width: 200px; height: 200px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; z-index: 0;"></div>
                             <div style="position: absolute; bottom: -80px; right: -80px; width: 250px; height: 250px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; z-index: 0;"></div>
