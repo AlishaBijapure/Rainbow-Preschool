@@ -625,7 +625,7 @@ section {
 
 .hero-wrapper {
     position: relative;
-    background-image: url('assets/images/—Pngtree—white cloud weather climate_8186765.png');
+    background-image: url('assets/images/—Pngtree—white cloud weather climate_8186765.webp');
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center;
@@ -1400,6 +1400,18 @@ section {
 }
 
 @media (max-width: 768px) {
+    /* Mobile-responsive backgrounds by repeating images */
+    .hero,
+    .usp-section,
+    .about-section,
+    .academics-section,
+    .instagram-section,
+    [id^="activity-"] {
+        background-repeat: repeat !important;
+        background-size: 300px auto !important;
+        background-attachment: scroll !important;
+    }
+
     .mobile-menu-toggle {
         display: block;
     }
